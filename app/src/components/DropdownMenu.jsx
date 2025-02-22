@@ -43,10 +43,6 @@ function DropdownMenu({ onClose }) {
 
       if (response.success) {
         setUser(null);
-        navigation.reset({
-          index: 0,
-          routes: [{ name: "login" }],
-        });
       } else {
         Alert.alert("Error", response.error);
       }

@@ -24,7 +24,7 @@ const LoginScreen = () => {
                 const userResponse = await AuthController.getCurrentUser();
                 if (userResponse.success) {
                     setUser(userResponse.data);
-                    navigation.navigate('dashboard');
+                    navigation.replace('dashboard');
                 }
             } else {
                 Alert.alert('Error', response.error);

@@ -9,6 +9,7 @@ import SignupScreen from './app/src/screens/SignupScreen';
 import DashBoardScreen from './app/src/screens/DashBoardScreen';
 import Navbar from './app/src/components/Navbar';
 import { useAuth } from './app/src/contexts/AuthContext';
+import HomeScreen from './app/src/screens/HomeScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -26,6 +27,7 @@ function AuthenticatedStack() {
 function NonAuthenticatedStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="home" component={HomeScreen} />
       <Stack.Screen name="login" component={LoginScreen} />
       <Stack.Screen name="signup" component={SignupScreen} />
     </Stack.Navigator>
