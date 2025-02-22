@@ -1,4 +1,4 @@
-import { Client, Account } from "appwrite";
+import { Client, Account, Databases, Storage } from "appwrite";
 import conf from "../../appwrite/conf.js";
 
 
@@ -8,5 +8,7 @@ const client = new Client()
     // .setPlatform(conf.appwritePlatform)
 
 const account = new Account(client);
+const databases = new Databases(client);
+const storage = new Storage(client);
 
-export { client, account };
+export { client, account, databases, storage };
