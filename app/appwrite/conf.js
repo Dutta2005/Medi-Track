@@ -1,12 +1,14 @@
+import {APP_API_KEY, APP_APPWRITE_BUCKET_ID, APP_APPWRITE_DATABASE_ID, APP_APPWRITE_ENDPOINT, APP_APPWRITE_PLATFORM, APP_APPWRITE_PROJECT_ID, APP_APPWRITE_PRODUCT_COLLECTION_ID, APP_APPWRITE_REMINDER_COLLECTION_ID} from '@env'
+
 const conf = {
-    appwritePlatform : String(import.meta.env.VITE_APPWRITE_PLATFORM),
-    appwriteEndpoint : String(import.meta.env.VITE_APPWRITE_ENDPOINT),
-    appwriteProjectId : String(import.meta.env.VITE_APPWRITE_PROJECT_ID),
-    appwriteDatabaseId : String(import.meta.env.VITE_APPWRITE_DATABASE_ID),
-    appwriteProductCollectionId : String(import.meta.env.VITE_APPWRITE_PRODUCT_COLLECTION_ID),
-    appwriteReminderCollectionId : String(import.meta.env.VITE_APPWRITE_REMINDER_COLLECTION_ID),
-    appwriteBucketId : String(import.meta.env.VITE_APPWRITE_BUCKET_ID),
-    apikey : String(import.meta.env.VITE_API_KEY)
+    appwritePlatform : String(APP_APPWRITE_PLATFORM),
+    appwriteEndpoint : String(APP_APPWRITE_ENDPOINT),
+    appwriteProjectId : String(APP_APPWRITE_PROJECT_ID),
+    appwriteDatabaseId : String(APP_APPWRITE_DATABASE_ID),
+    appwriteProductCollectionId : String(APP_APPWRITE_PRODUCT_COLLECTION_ID),
+    appwriteReminderCollectionId : String(APP_APPWRITE_REMINDER_COLLECTION_ID),
+    appwriteBucketId : String(APP_APPWRITE_BUCKET_ID),
+    apikey : String(APP_API_KEY)
 }
 
 export default conf

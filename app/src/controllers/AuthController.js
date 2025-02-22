@@ -1,4 +1,4 @@
-import { account } from '../config';
+import { account } from "../config/appwrite"
 import { ID } from 'appwrite';
 
 class AuthController {
