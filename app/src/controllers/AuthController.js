@@ -59,14 +59,18 @@ class AuthController {
     // Logout user
     async logout() {
         try {
-            await account.deleteSession('current');
+            console.log('Starting logout process');  // Debug log
+            const result = await account.deleteSession('current');
+            console.log('Session deletion result:', result);  // Debug log
+            
             return {
                 success: true
             };
         } catch (error) {
+            console.error('Logout error details:', error);  // Detailed error log
             return {
                 success: false,
-                error: error.message
+                error: error.message || 'Failed to logout'
             };
         }
     }
