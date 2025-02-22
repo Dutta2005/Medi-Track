@@ -1,42 +1,38 @@
-import React from "react";
-import { Button, View, Text, Alert } from "react-native";
-import AuthController from "../controllers/AuthController";
-import { useNavigation } from "@react-navigation/native";
-import { useAuth } from '../contexts/AuthContext';
+import React, { useState } from "react";
+import { View, Text, TouchableOpacity } from "react-native";
+import { Menu } from "lucide-react-native";
+import DropdownMenu from "./DropdownMenu";
 
 function Navbar() {
-  const navigation = useNavigation();
-  const { setUser, user } = useAuth();
-
-  const handleLogout = async () => {
-    try {
-      const response = await AuthController.logout();
-      
-      if (response.success) {
-        setUser(null);
-        navigation.reset({
-          index: 0,
-          routes: [{ name: 'login' }]
-        });
-      } else {
-        Alert.alert('Error', response.error);
-      }
-    } catch (error) {
-      Alert.alert('Error', 'An unexpected error occurred. Please try again.');
-    }
-  };
+  const [open, setOpen] = useState(false);
 
   return (
-    <View style={{ height: 60 }} className="flex-row justify-between items-center px-4 bg-dark-bg">
-      <Text className="text-dark-text text-lg font-bold">MediTrack</Text>
-      { user && (
-        <Button 
-        title="Logout" 
-        onPress={handleLogout} 
-        color="#ff8f00"
-      />
-      )}
-    </View>
+    <>
+      <View
+        style={{ height: 60 }}
+        className="flex-row justify-between items-center px-4 bg-dark-bg border-b border-dark-border relative z-50"
+      >
+        <Text className="text-dark-text text-xl font-bold">MediTrack</Text>
+
+        <View>
+          <TouchableOpacity
+            className="p-2 rounded-full active:bg-dark-secondary"
+            onPress={() => setOpen(!open)}
+          >
+            <Menu color="#f7f9eb" size={24} />
+          </TouchableOpacity>
+          {open && (
+            <>
+              <DropdownMenu onClose={() => setOpen(false)} />
+              <TouchableOpacity
+                className="absolute -left-4 top-12 w-screen h-screen bg-black/20"
+                onPress={() => setOpen(false)}
+              />
+            </>
+          )}
+        </View>
+      </View>
+    </>
   );
 }
 
