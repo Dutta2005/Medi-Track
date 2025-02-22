@@ -15,8 +15,8 @@ const CreateProductForm = () => {
     expiryDate: new Date(),
     scheduleType: '',
     dailyDosages: [],
-    weeklyDosages: [], // [time, ...days]
-    customSchedule: [], // [date, repeatDays]
+    weeklyDosages: [],
+    customSchedule: [],
   });
 
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -29,6 +29,7 @@ const CreateProductForm = () => {
   const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   const [selectedDays, setSelectedDays] = useState([]);
   const [repeatDays, setRepeatDays] = useState('');
+
 
   const handleChange = (name, value) => {
     setProduct(prev => ({ ...prev, [name]: value }));
@@ -105,7 +106,6 @@ const CreateProductForm = () => {
     }
 
     setProduct(updatedProduct);
-    console.log('Submit:', updatedProduct);
 
     try {
         const res = await ProductController.createProduct({
@@ -114,13 +114,9 @@ const CreateProductForm = () => {
         })
         if (res.success) {
             navigation.navigate('dashboard')
-        } else{
-            console.log(res)
         }
     } catch (error) {
-        console.log('====================================');
-        console.log('Error:', error);
-        console.log('====================================');
+        console.log(error)
     }
   };
 
