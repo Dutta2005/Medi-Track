@@ -17,7 +17,11 @@ class ProductController {
                     reorderPoint: productData.reorderPoint,
                     userId: productData.userId,
                     dosageInstructions: productData.dosageInstructions,
-                    image: productData.image
+                    image: productData.image,
+                    scheduleType: productData.scheduleType || "custom",
+                    dailyDosages: JSON.stringify(productData.dailyDosages || []),
+                    weeklyDosages: JSON.stringify(productData.weeklyDosages || []),
+                    customSchedule: JSON.stringify(productData.customSchedule || {})
                 }
             );
             return { success: true, data: response };
@@ -32,7 +36,12 @@ class ProductController {
                 conf.appwriteDatabaseId,
                 conf.appwriteProductCollectionId,
                 productId,
-                updates
+                {
+                    ...updates,
+                    dailyDosages: JSON.stringify(updates.dailyDosages || []),
+                    weeklyDosages: JSON.stringify(updates.weeklyDosages || []),
+                    customSchedule: JSON.stringify(updates.customSchedule || {})
+                }
             );
             return { success: true, data: response };
         } catch (error) {
@@ -62,7 +71,14 @@ class ProductController {
                 conf.appwriteProductCollectionId,
                 productId
             );
-            return { success: true, data: response };
+            return { success: true, 
+                data: {
+                    ...response,
+                    dailyDosages: JSON.parse(response.dailyDosages || "[]"),
+                    weeklyDosages: JSON.parse(response.weeklyDosages || "[]"),
+                    customSchedule: JSON.parse(response.customSchedule || "{}")
+                }
+             };
         } catch (error) {
             return { success: false, error: error.message };
         }
