@@ -4,6 +4,7 @@ import { ID, Query } from "appwrite";
 
 class ProductController {
     async createProduct(productData) {
+        console.log("Product data:", productData);
         try {
             const response = await databases.createDocument(
                 conf.appwriteDatabaseId,
@@ -21,7 +22,7 @@ class ProductController {
                     scheduleType: productData.scheduleType || "custom",
                     dailyDosages: JSON.stringify(productData.dailyDosages || []),
                     weeklyDosages: JSON.stringify(productData.weeklyDosages || []),
-                    customSchedule: JSON.stringify(productData.customSchedule || {})
+                    customSchedule: JSON.stringify(productData.customSchedule || [])
                 }
             );
             return { success: true, data: response };
