@@ -24,13 +24,15 @@ const AlertCard = ({ title, description, type = "warning" }) => (
 
 const ProductCard = ({ product }) => (
   <View className="bg-white p-4 rounded-lg shadow-sm mb-4">
-    <Text className="text-lg font-semibold">{product.name}</Text>
+    <View className="flex-row justify-between">
+      <Text className="text-lg font-semibold">{product.name}</Text>
+      <Text className="text-sm text-dark-primary">{product.category}</Text>
+    </View>
     <View className="flex-row justify-between mt-2">
       <Text className="text-gray-600">Quantity: {product.quantity}</Text>
-      <Text className="text-gray-600">Category: {product.category}</Text>
     </View>
     <Text className="text-gray-600 mt-1">
-      Expires: {new Date(product.expiryDate).toLocaleDateString()}
+      Expires: {new Date(product.expiry_date).toLocaleDateString()}
     </Text>
   </View>
 );

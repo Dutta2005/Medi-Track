@@ -1,19 +1,21 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, Switch } from 'react-native';
-import { TextInput } from 'react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import ProductController from '../controllers/ProductController';
-import { useAuth } from '../contexts/AuthContext';
-import { useNavigation } from '@react-navigation/native';
+import React, { useState } from "react";
+import { View, Text, TouchableOpacity, ScrollView, Switch } from "react-native";
+import { TextInput } from "react-native";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import ProductController from "../controllers/ProductController";
+import { useAuth } from "../contexts/AuthContext";
+import { useNavigation } from "@react-navigation/native";
+import { Picker } from "@react-native-picker/picker";
 
 const CreateProductForm = () => {
-    const { user } = useAuth()
-    const navigation = useNavigation()
+  const { user } = useAuth();
+  const navigation = useNavigation();
   const [product, setProduct] = useState({
-    name: '',
-    quantity: '',
+    name: "",
+    quantity: "",
+    category: "",
     expiryDate: new Date(),
-    scheduleType: '',
+    scheduleType: "",
     dailyDosages: [],
     weeklyDosages: [],
     customSchedule: [],
@@ -26,29 +28,37 @@ const CreateProductForm = () => {
   const [enableSchedule, setEnableSchedule] = useState(false);
   const [customStartDate, setCustomStartDate] = useState(new Date());
 
-  const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  const daysOfWeek = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
+  const categories = ["Medicine", "Injection", "Medical Supplies", "Others"];
   const [selectedDays, setSelectedDays] = useState([]);
-  const [repeatDays, setRepeatDays] = useState('');
-
+  const [repeatDays, setRepeatDays] = useState("");
 
   const handleChange = (name, value) => {
-    setProduct(prev => ({ ...prev, [name]: value }));
+    setProduct((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleDateChange = (event, selectedDate) => {
     setShowDatePicker(false);
-    if (event.type === 'set' && selectedDate) {
+    if (event.type === "set" && selectedDate) {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       if (selectedDate >= today) {
-        handleChange('expiryDate', selectedDate);
+        handleChange("expiryDate", selectedDate);
       }
     }
   };
 
   const handleCustomDateChange = (event, selectedDate) => {
     setShowCustomDatePicker(false);
-    if (event.type === 'set' && selectedDate) {
+    if (event.type === "set" && selectedDate) {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       if (selectedDate >= today) {
@@ -59,47 +69,58 @@ const CreateProductForm = () => {
 
   const handleTimeSelection = (event, selected) => {
     setShowTimePicker(false);
-    if (event.type === 'set' && selected) {
+    if (event.type === "set" && selected) {
       setSelectedTime(selected);
-      if (product.scheduleType === 'daily') {
-        const timeString = selected.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        setProduct(prev => ({
+      if (product.scheduleType === "daily") {
+        const timeString = selected.toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+        setProduct((prev) => ({
           ...prev,
-          dailyDosages: [...prev.dailyDosages, timeString]
+          dailyDosages: [...prev.dailyDosages, timeString],
         }));
       }
     }
   };
 
   const removeDailyTime = (index) => {
-    setProduct(prev => ({
+    setProduct((prev) => ({
       ...prev,
-      dailyDosages: prev.dailyDosages.filter((_, i) => i !== index)
+      dailyDosages: prev.dailyDosages.filter((_, i) => i !== index),
     }));
   };
 
   const toggleDaySelection = (day) => {
-    setSelectedDays(prev => 
-      prev.includes(day) ? prev.filter(d => d !== day) : [...prev, day].sort((a, b) => 
-        daysOfWeek.indexOf(a) - daysOfWeek.indexOf(b)
-      )
+    setSelectedDays((prev) =>
+      prev.includes(day)
+        ? prev.filter((d) => d !== day)
+        : [...prev, day].sort(
+            (a, b) => daysOfWeek.indexOf(a) - daysOfWeek.indexOf(b)
+          )
     );
   };
 
-  const handleSubmit = async() => {
+  const handleSubmit = async () => {
     let updatedProduct = { ...product };
 
     if (enableSchedule) {
       switch (product.scheduleType) {
-        case 'weekly':
+        case "weekly":
           if (selectedDays.length > 0) {
-            const timeString = selectedTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const timeString = selectedTime.toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+            });
             updatedProduct.weeklyDosages = [timeString, ...selectedDays];
           }
           break;
-        case 'custom':
+        case "custom":
           if (repeatDays && !isNaN(repeatDays) && parseInt(repeatDays) > 0) {
-            updatedProduct.customSchedule = [customStartDate.toISOString(), parseInt(repeatDays)];
+            updatedProduct.customSchedule = [
+              customStartDate.toISOString(),
+              parseInt(repeatDays),
+            ];
           }
           break;
       }
@@ -108,15 +129,17 @@ const CreateProductForm = () => {
     setProduct(updatedProduct);
 
     try {
-        const res = await ProductController.createProduct({
-            ...updatedProduct,
-            userId: user.$id
-        })
-        if (res.success) {
-            navigation.navigate('dashboard')
-        }
+      const res = await ProductController.createProduct({
+        ...updatedProduct,
+        userId: user.$id,
+      });
+      if (res.success) {
+        navigation.navigate("dashboard");
+      } else {
+        console.log(res);
+      }
     } catch (error) {
-        console.log(error)
+      console.log(error);
     }
   };
 
@@ -129,15 +152,15 @@ const CreateProductForm = () => {
   const toggleSchedule = (value) => {
     setEnableSchedule(value);
     if (!value) {
-      setProduct(prev => ({
+      setProduct((prev) => ({
         ...prev,
-        scheduleType: '',
+        scheduleType: "",
         dailyDosages: [],
         weeklyDosages: [],
-        customSchedule: []
+        customSchedule: [],
       }));
     } else {
-      handleChange('scheduleType', 'daily');
+      handleChange("scheduleType", "daily");
     }
   };
 
@@ -145,25 +168,53 @@ const CreateProductForm = () => {
     <ScrollView className="flex-1 bg-[#1e1c16] p-4">
       {/* Previous sections remain the same */}
       <View className="space-y-4">
-        <Text className="text-2xl font-bold text-[#f7f9eb]">Create Product</Text>
+        <Text className="text-2xl font-bold text-[#f7f9eb]">
+          Create Product
+        </Text>
 
         {/* Basic fields remain the same */}
-        <View className="space-y-2">
+        <View className="my-2">
           <Text className="text-[#f7f9eb]">Product Name</Text>
           <TextInput
             value={product.name}
-            onChangeText={(text) => handleChange('name', text)}
+            onChangeText={(text) => handleChange("name", text)}
             className="w-full p-3 rounded-lg bg-[#30241a] text-[#f7f9eb] border border-[#30241a]"
             placeholderTextColor="#9f8b76"
             placeholder="Enter product name"
           />
         </View>
 
-        <View className="space-y-2">
+        <View className="my-2">
+          <Picker
+            selectedValue={product.category}
+            onValueChange={(itemValue) => handleChange("category", itemValue)}
+            placeholder="Select category"
+            style={{
+              backgroundColor: "#1e1c16",
+              color: "#f7f9eb",
+            }}
+          >
+            <Picker.Item
+              label="Select category"
+              value=""
+              style={{ color: "#000000" }}
+            />
+            {categories.map((category) => (
+              <Picker.Item
+                key={category}
+                label={category}
+                value={category}
+                style={{ color: "#000000" }} // Ensuring text is visible
+              />
+            ))}
+          </Picker>
+        </View>
+
+        <View className="mb-2">
           <Text className="text-[#f7f9eb]">Quantity</Text>
           <TextInput
             value={product.quantity}
-            onChangeText={(text) => handleChange('quantity', text)}
+            onChangeText={(text) => handleChange("quantity", text)}
             keyboardType="numeric"
             className="w-full p-3 rounded-lg bg-[#30241a] text-[#f7f9eb] border border-[#30241a]"
             placeholderTextColor="#9f8b76"
@@ -171,9 +222,9 @@ const CreateProductForm = () => {
           />
         </View>
 
-        <View className="space-y-2">
+        <View className="mb-2">
           <Text className="text-[#f7f9eb]">Expiry Date</Text>
-          <TouchableOpacity 
+          <TouchableOpacity
             onPress={() => setShowDatePicker(true)}
             className="w-full p-3 rounded-lg bg-[#30241a] border border-[#30241a]"
           >
@@ -197,22 +248,24 @@ const CreateProductForm = () => {
           <Switch
             value={enableSchedule}
             onValueChange={toggleSchedule}
-            trackColor={{ false: '#30241a', true: '#ff8f00' }}
-            thumbColor={enableSchedule ? '#f7f9eb' : '#9f8b76'}
+            trackColor={{ false: "#30241a", true: "#ff8f00" }}
+            thumbColor={enableSchedule ? "#f7f9eb" : "#9f8b76"}
           />
         </View>
 
         {enableSchedule && (
           <View className="space-y-4">
-            <View className="space-y-2">
+            <View className="mb-2">
               <Text className="text-[#f7f9eb]">Schedule Type</Text>
               <View className="flex-row space-x-2">
-                {['daily', 'weekly', 'custom'].map((type) => (
+                {["daily", "weekly", "custom"].map((type) => (
                   <TouchableOpacity
                     key={type}
-                    onPress={() => handleChange('scheduleType', type)}
+                    onPress={() => handleChange("scheduleType", type)}
                     className={`px-4 py-2 rounded-lg ${
-                      product.scheduleType === type ? 'bg-[#ff8f00]' : 'bg-[#30241a]'
+                      product.scheduleType === type
+                        ? "bg-[#ff8f00]"
+                        : "bg-[#30241a]"
                     }`}
                   >
                     <Text className="text-[#f7f9eb] capitalize">{type}</Text>
@@ -222,8 +275,8 @@ const CreateProductForm = () => {
             </View>
 
             {/* Daily schedule section remains the same */}
-            {product.scheduleType === 'daily' && (
-              <View className="space-y-2">
+            {product.scheduleType === "daily" && (
+              <View className="mb-2">
                 <Text className="text-[#f7f9eb]">Daily Times</Text>
                 <TouchableOpacity
                   onPress={() => setShowTimePicker(true)}
@@ -239,9 +292,12 @@ const CreateProductForm = () => {
                     onChange={handleTimeSelection}
                   />
                 )}
-                <View className="space-y-2">
+                <View className="mb-2">
                   {product.dailyDosages.map((time, index) => (
-                    <View key={index} className="flex-row justify-between items-center bg-[#30241a] p-3 rounded-lg">
+                    <View
+                      key={index}
+                      className="flex-row justify-between items-center bg-[#30241a] p-3 rounded-lg"
+                    >
                       <Text className="text-[#f7f9eb]">{time}</Text>
                       <TouchableOpacity onPress={() => removeDailyTime(index)}>
                         <Text className="text-red-500">Remove</Text>
@@ -253,16 +309,19 @@ const CreateProductForm = () => {
             )}
 
             {/* Weekly schedule section remains the same */}
-            {product.scheduleType === 'weekly' && (
+            {product.scheduleType === "weekly" && (
               <View className="space-y-4">
-                <View className="space-y-2">
+                <View className="mb-2">
                   <Text className="text-[#f7f9eb]">Select Time</Text>
                   <TouchableOpacity
                     onPress={() => setShowTimePicker(true)}
                     className="bg-[#30241a] p-3 rounded-lg"
                   >
                     <Text className="text-[#f7f9eb]">
-                      {selectedTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      {selectedTime.toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
                     </Text>
                   </TouchableOpacity>
                   {showTimePicker && (
@@ -275,7 +334,7 @@ const CreateProductForm = () => {
                   )}
                 </View>
 
-                <View className="space-y-2">
+                <View className="mb-2">
                   <Text className="text-[#f7f9eb]">Select Days:</Text>
                   <View className="flex-row flex-wrap gap-2">
                     {daysOfWeek.map((day) => (
@@ -283,10 +342,14 @@ const CreateProductForm = () => {
                         key={day}
                         onPress={() => toggleDaySelection(day)}
                         className={`px-3 py-2 rounded-lg ${
-                          selectedDays.includes(day) ? 'bg-[#ff8f00]' : 'bg-[#30241a]'
+                          selectedDays.includes(day)
+                            ? "bg-[#ff8f00]"
+                            : "bg-[#30241a]"
                         }`}
                       >
-                        <Text className="text-[#f7f9eb]">{day.slice(0, 3)}</Text>
+                        <Text className="text-[#f7f9eb]">
+                          {day.slice(0, 3)}
+                        </Text>
                       </TouchableOpacity>
                     ))}
                   </View>
@@ -295,11 +358,11 @@ const CreateProductForm = () => {
             )}
 
             {/* Updated custom schedule section */}
-            {product.scheduleType === 'custom' && (
+            {product.scheduleType === "custom" && (
               <View className="space-y-4">
-                <View className="space-y-2">
+                <View className="mb-2">
                   <Text className="text-[#f7f9eb]">Start Date</Text>
-                  <TouchableOpacity 
+                  <TouchableOpacity
                     onPress={() => setShowCustomDatePicker(true)}
                     className="w-full p-3 rounded-lg bg-[#30241a] border border-[#30241a]"
                   >
@@ -318,7 +381,7 @@ const CreateProductForm = () => {
                   )}
                 </View>
 
-                <View className="space-y-2">
+                <View className="mb-2">
                   <Text className="text-[#f7f9eb]">Repeat Every (Days)</Text>
                   <TextInput
                     value={repeatDays}
@@ -338,7 +401,9 @@ const CreateProductForm = () => {
           className="bg-[#ff8f00] p-4 rounded-lg mt-4"
           onPress={handleSubmit}
         >
-          <Text className="text-[#f7f9eb] text-center font-bold">Save Product</Text>
+          <Text className="text-[#f7f9eb] text-center font-bold">
+            Save Product
+          </Text>
         </TouchableOpacity>
       </View>
     </ScrollView>
