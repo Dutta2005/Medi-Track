@@ -4,27 +4,22 @@ import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { AuthProvider } from './app/src/contexts/AuthContext';
 import LoginScreen from './app/src/screens/LoginScreen';
 import DemoScreen from './app/src/screens/DemoScreen';
+import "./global.css";
+import SignupScreen from './app/src/screens/SignupScreen';
+import DashBoard from './app/src/screens/DashBoard';
+import Navbar from './app/src/components/Navbar';
 
 const Stack = createNativeStackNavigator();
 
 function Navigation() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Login" component={LoginScreen} />
-      <Stack.Screen name="Demo" component={DemoScreen} />
+      <Stack.Screen name="login" component={LoginScreen} />
+      <Stack.Screen name="signup" component={SignupScreen} />
+      <Stack.Screen name="dashboard" component={DashBoard} />
+      <Stack.Screen name="demo" component={DemoScreen} />
     </Stack.Navigator>
   );
-}
-
-function NavigateButton() {
-  const navigation = useNavigation();
-  
-  return (
-  <View style={{margin: 20}}>
-    <Button title="Go to Login" onPress={() => navigation.navigate("Login")} />
-    <Button title="Go to Demo" onPress={() => navigation.navigate("Demo")} />
-  </View>
-);
 }
 
 export default function App() {
@@ -32,7 +27,7 @@ export default function App() {
     <AuthProvider>
       <NavigationContainer>
         <SafeAreaView style={styles.container}>
-          <NavigateButton />
+          <Navbar />
           <Navigation />
         </SafeAreaView>
       </NavigationContainer>
