@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text, View } from 'react-native';
 
-function DashBoard() {
+function DashBoardScreen() {
     return (
         <View>
             <Text>DashBoard</Text>
@@ -9,4 +9,4 @@ function DashBoard() {
     );
 }
 
-export default DashBoard;
+export default DashBoardScreen;
