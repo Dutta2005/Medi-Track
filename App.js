@@ -10,6 +10,7 @@ import DashBoardScreen from './app/src/screens/DashBoardScreen';
 import Navbar from './app/src/components/Navbar';
 import { useAuth } from './app/src/contexts/AuthContext';
 import HomeScreen from './app/src/screens/HomeScreen';
+import CreateProductForm from './app/src/screens/CreateProductForm';
 
 const Stack = createNativeStackNavigator();
 
@@ -18,6 +19,7 @@ function AuthenticatedStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="dashboard" component={DashBoardScreen} />
+      <Stack.Screen name="CreateProduct" component={CreateProductForm} />
       <Stack.Screen name="demo" component={DemoScreen} />
     </Stack.Navigator>
   );
