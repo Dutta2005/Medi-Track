@@ -219,18 +219,18 @@ function HomeScreen() {
                     entering={FadeInUp.duration(1000).delay(600)}
                     className="mt-auto mb-8"
                 >
-                    <GradientButton onPress={() => navigation.navigate('login')}>
+                    <GradientButton onPress={() => navigation.navigate('signup')}>
                         <Text className="text-light-primaryText text-center text-xl font-semibold">
                             Get Started
                         </Text>
                     </GradientButton>
 
                     <TouchableOpacity
-                        onPress={() => navigation.navigate('signup')}
+                        onPress={() => navigation.navigate('login')}
                         className="flex-row justify-center items-center space-x-2 mt-4"
                     >
                         <Text className="text-light-text text-lg">Already have an account?</Text>
-                        <Text className="text-light-primary text-lg font-semibold">Login</Text>
+                        <Text className="text-light-primary text-lg font-semibold">  Login </Text>
                     </TouchableOpacity>
                     
                 </Animated.View>
