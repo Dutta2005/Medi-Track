@@ -1,7 +1,6 @@
-// DropdownMenu.js
 import React from "react";
-import { View, Text, TouchableOpacity, Alert, Modal } from "react-native";
-import { User, Settings, LogOut, Bell } from "lucide-react-native";
+import { View, Text, TouchableOpacity, Alert, Modal, SafeAreaView, StatusBar, Animated } from "react-native";
+import { User, Bell, Settings, LogOut, ChevronRight, X } from "lucide-react-native";
 import AuthController from "../../controllers/AuthController";
 import { useNavigation } from "@react-navigation/native";
 import { useAuth } from "../../contexts/AuthContext";
@@ -11,44 +10,68 @@ function DropdownMenu({ onClose }) {
   const navigation = useNavigation();
   const { setUser, user } = useAuth();
   const [show, setShow] = React.useState(false);
+  const slideAnim = React.useRef(new Animated.Value(0)).current;
+
+  React.useEffect(() => {
+    Animated.spring(slideAnim, {
+      toValue: 1,
+      useNativeDriver: true,
+      tension: 50,
+      friction: 7,
+    }).start();
+  }, []);
 
   const menuItems = [
     {
       icon: User,
-      label: "Profile",
+      label: "Dashboard",
       onPress: () => {
-        navigation.navigate("Profile");
+        navigation.navigate("dashboard");
         onClose();
       },
+      color: "#4CAF50",
     },
     {
       icon: Bell,
       label: "Notifications",
-      onPress: () => {
-        // navigation.navigate("Notifications");
-        setShow(true);
-        // onClose();
-      },
+      onPress: () => setShow(true),
+      color: "#2196F3",
     },
     {
       icon: Settings,
       label: "Settings",
       onPress: () => {
-        navigation.navigate("Settings");
+        navigation.navigate("settings");
         onClose();
       },
+      color: "#9C27B0",
     },
   ];
 
   const handleLogout = async () => {
     try {
-      const response = await AuthController.logout();
-
-      if (response.success) {
-        setUser(null);
-      } else {
-        Alert.alert("Error", response.error);
-      }
+      Alert.alert(
+        "Confirm Logout",
+        "Are you sure you want to logout?",
+        [
+          {
+            text: "Cancel",
+            style: "cancel",
+          },
+          {
+            text: "Logout",
+            style: "destructive",
+            onPress: async () => {
+              const response = await AuthController.logout();
+              if (response.success) {
+                setUser(null);
+              } else {
+                Alert.alert("Error", response.error);
+              }
+            },
+          },
+        ]
+      );
     } catch (error) {
       Alert.alert("Error", "An unexpected error occurred. Please try again.");
     }
@@ -56,59 +79,87 @@ function DropdownMenu({ onClose }) {
 
   return (
     <>
-    <Modal
-    visible={show}
-    animationType="slide"
-    onRequestClose={() => setShow(false)}
-  >
-    <View className="flex-1">
-      <View className="bg-[#1e1c16] py-4 px-4 flex-row justify-between items-center">
-        <Text className="text-[#f7f9eb] text-xl">Notifications</Text>
-        <TouchableOpacity onPress={() => setShow(false)}>
-          <Text className="text-[#ff8f00]">Close</Text>
-        </TouchableOpacity>
-      </View>
-      <Alerts />
-    </View>
-  </Modal>
-
-    <View className="absolute right-0 top-12 w-56 bg-dark-card rounded-lg shadow-lg border border-dark-border overflow-hidden">
-      {/* User Info Section */}
-      {user && (
-        <View className="p-4 border-b border-dark-border">
-          <Text className="text-dark-text font-semibold">{user.name || "User Name"}</Text>
-          <Text className="text-dark-mutedText text-sm">{user.email || "user@example.com"}</Text>
-        </View>
-      )}
-
-      {/* Menu Items */}
-      <View className="py-1">
-        {menuItems.map((item, index) => (
-          <TouchableOpacity
-            key={index}
-            className="flex-row items-center px-4 py-3 active:bg-dark-secondary"
-            onPress={item.onPress}
-          >
-            <item.icon size={20} color="#f7f9eb" />
-            <Text className="text-dark-text ml-3">{item.label}</Text>
-          </TouchableOpacity>
-        ))}
-
-        {/* Logout Section */}
-        {user && (
-          <>
-            <View className="h-px bg-dark-border mx-2 my-1" />
+      <Modal
+        visible={show}
+        animationType="slide"
+        onRequestClose={() => setShow(false)}
+        statusBarTranslucent
+      >
+        <SafeAreaView className="flex-1 dark:bg-[#1e1c16]">
+          <StatusBar barStyle="light-content" />
+          <View className="py-4 px-4 flex-row justify-between items-center border-b border-[#ffffff20]">
+            <Text className="text-[#f7f9eb] text-xl font-semibold">Notifications</Text>
             <TouchableOpacity
-              className="flex-row items-center px-4 py-3 active:bg-dark-secondary"
-              onPress={handleLogout}
+              className="p-2 rounded-full bg-[#ffffff10]"
+              onPress={() => setShow(false)}
             >
-              <LogOut size={20} color="#d32f2f" />
-              <Text className="text-destructive ml-3">Logout</Text>
+              <X size={24} color="#ff8f00" />
             </TouchableOpacity>
-          </>
+          </View>
+          <Alerts />
+        </SafeAreaView>
+      </Modal>
+
+      <Animated.View
+        className="absolute right-4 top-20 bg-light-muted dark:bg-dark-muted rounded-2xl shadow-xl w-72 overflow-hidden"
+        style={{
+          transform: [
+            {
+              scale: slideAnim.interpolate({
+                inputRange: [0, 1],
+                outputRange: [0.9, 1],
+              }),
+            },
+          ],
+          opacity: slideAnim,
+        }}
+      >
+        {user && (
+          <View className="p-6 border-b border-light-ring dark:border-dark-ring">
+            <View className="w-12 h-12 bg-light-primary dark:bg-dark-primary rounded-full mb-3 items-center justify-center">
+              <Text className="text-light-text dark:text-dark-text text-xl font-bold">
+                {user.name?.charAt(0).toUpperCase() || "U"}
+              </Text>
+            </View>
+            <Text className="text-light-text dark:text-dark-text text-lg font-semibold">{user.name || "User Name"}</Text>
+            <Text className="text-light-text dark:text-dark-text text-sm">{user.email || "user@example.com"}</Text>
+          </View>
         )}
-      </View>
-    </View>
+
+        <View className="py-2">
+          {menuItems.map((item, index) => (
+            <TouchableOpacity
+              key={index}
+              className="flex-row items-center px-4 py-3.5 active:bg-light-bg dark:active:bg-dark-bg"
+              onPress={item.onPress}
+            >
+              <View
+                className="w-8 h-8 rounded-full items-center justify-center"
+                style={{ backgroundColor: `${item.color}20` }}
+              >
+                <item.icon size={20} color={item.color} />
+              </View>
+              <Text className="text-light-text dark:text-dark-text text-base ml-3 flex-1">{item.label}</Text>
+              <ChevronRight size={20} color="#ffffff40" className="ml-2" />
+            </TouchableOpacity>
+          ))}
+
+          {user && (
+            <>
+              <View className="h-px mx-4 my-2" />
+              <TouchableOpacity
+                className="flex-row items-center px-4 py-3.5 active:bg-light-bg dark:active:bg-dark-bg"
+                onPress={handleLogout}
+              >
+                <View className="w-8 h-8 rounded-full items-center justify-center">
+                  <LogOut size={20} color="#dc3545" />
+                </View>
+                <Text className="text-[#dc3545] text-base ml-3">Logout</Text>
+              </TouchableOpacity>
+            </>
+          )}
+        </View>
+      </Animated.View>
     </>
   );
 }

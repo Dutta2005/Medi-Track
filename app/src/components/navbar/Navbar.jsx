@@ -7,7 +7,7 @@ import { useAuth } from "../../contexts/AuthContext";
 
 function Navbar() {
   const [open, setOpen] = useState(false);
-  const { theme } = useAuth();
+  const { theme, user } = useAuth();
   
   // Define text and background colors based on theme
   const textColor = theme === 'dark' ? '#f7f9eb' : '#1e1c16';
@@ -38,7 +38,8 @@ function Navbar() {
       <View className="flex-row items-center gap-2">
         <ThemeToggler />
 
-        <TouchableOpacity
+        {user && (
+          <TouchableOpacity
           style={{
             padding: 6,
             borderRadius: 9999,
@@ -48,6 +49,7 @@ function Navbar() {
         >
           <Menu color={textColor} size={30} />
         </TouchableOpacity>
+        )}
         </View>
       </View>
 
