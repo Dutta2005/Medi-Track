@@ -1,14 +1,16 @@
 // DropdownMenu.js
 import React from "react";
-import { View, Text, TouchableOpacity, Alert } from "react-native";
+import { View, Text, TouchableOpacity, Alert, Modal } from "react-native";
 import { User, Settings, LogOut, Bell } from "lucide-react-native";
 import AuthController from "../../controllers/AuthController";
 import { useNavigation } from "@react-navigation/native";
 import { useAuth } from "../../contexts/AuthContext";
+import Alerts from "../Alerts";
 
 function DropdownMenu({ onClose }) {
   const navigation = useNavigation();
   const { setUser, user } = useAuth();
+  const [show, setShow] = React.useState(false);
 
   const menuItems = [
     {
@@ -23,8 +25,9 @@ function DropdownMenu({ onClose }) {
       icon: Bell,
       label: "Notifications",
       onPress: () => {
-        navigation.navigate("Notifications");
-        onClose();
+        // navigation.navigate("Notifications");
+        setShow(true);
+        // onClose();
       },
     },
     {
@@ -52,6 +55,23 @@ function DropdownMenu({ onClose }) {
   };
 
   return (
+    <>
+    <Modal
+    visible={show}
+    animationType="slide"
+    onRequestClose={() => setShow(false)}
+  >
+    <View className="flex-1">
+      <View className="bg-[#1e1c16] py-4 px-4 flex-row justify-between items-center">
+        <Text className="text-[#f7f9eb] text-xl">Notifications</Text>
+        <TouchableOpacity onPress={() => setShow(false)}>
+          <Text className="text-[#ff8f00]">Close</Text>
+        </TouchableOpacity>
+      </View>
+      <Alerts />
+    </View>
+  </Modal>
+
     <View className="absolute right-0 top-12 w-56 bg-dark-card rounded-lg shadow-lg border border-dark-border overflow-hidden">
       {/* User Info Section */}
       {user && (
@@ -89,6 +109,7 @@ function DropdownMenu({ onClose }) {
         )}
       </View>
     </View>
+    </>
   );
 }
 
