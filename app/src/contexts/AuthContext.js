@@ -11,10 +11,7 @@ export const AuthProvider = ({ children }) => {
     const { setColorScheme } = useColorScheme();
 
     useEffect(() => {
-        const fetchUser = async () => {
-            await checkUser();
-        };
-        fetchUser();
+        checkUser();
         setColorScheme(theme);
     }, []);
 
