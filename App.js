@@ -12,6 +12,7 @@ import HomeScreen from './app/src/screens/HomeScreen';
 import CreateProductForm from './app/src/screens/CreateProductForm';
 import Navbar from './app/src/components/navbar/Navbar';
 import Loading from './app/src/components/Loading';
+import { ThemeProvider } from "./contexts/ThemeContext";
 const Stack = createNativeStackNavigator();
 
 
