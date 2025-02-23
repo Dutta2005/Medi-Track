@@ -266,7 +266,7 @@ const DashboardScreen = () => {
         {getFilteredProducts().map(product => (
           <TouchableOpacity 
             key={product.$id}
-            onPress={() => navigation.navigate('ProductDetails', { product })}
+            onPress={() => navigation.navigate('ProductDetails', { product: product })}
           >
             <ProductCard product={product} />
           </TouchableOpacity>

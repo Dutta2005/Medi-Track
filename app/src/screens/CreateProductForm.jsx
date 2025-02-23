@@ -28,6 +28,7 @@ const CreateProductForm = () => {
   const [selectedTime, setSelectedTime] = useState(new Date());
   const [enableSchedule, setEnableSchedule] = useState(false);
   const [customStartDate, setCustomStartDate] = useState(new Date());
+  const [submiting, setSubmitting] = useState(false);
 
   const daysOfWeek = [
     "Sunday",
@@ -103,6 +104,7 @@ const CreateProductForm = () => {
   };
 
   const handleSubmit = async () => {
+    setSubmitting(true);
     let updatedProduct = { ...product };
 
     if (enableSchedule) {
@@ -141,6 +143,8 @@ const CreateProductForm = () => {
       }
     } catch (error) {
       console.log(error);
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -413,9 +417,10 @@ const CreateProductForm = () => {
         <TouchableOpacity
           className="bg-[#ff8f00] p-4 rounded-lg mt-4"
           onPress={handleSubmit}
+          disabled={submiting}
         >
           <Text className="text-[#f7f9eb] text-center font-bold">
-            Save Product
+            {submiting ? "Saving..." : "Save Product"}
           </Text>
         </TouchableOpacity>
       </View>

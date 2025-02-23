@@ -3,7 +3,6 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
 import { AuthProvider } from './app/src/contexts/AuthContext';
 import LoginScreen from './app/src/screens/LoginScreen';
-import DemoScreen from './app/src/screens/DemoScreen';
 import "./global.css";
 import SignupScreen from './app/src/screens/SignupScreen';
 import DashBoardScreen from './app/src/screens/DashBoardScreen';
@@ -15,6 +14,7 @@ import Loading from './app/src/components/Loading';
 import ReminderController from './app/src/controllers/ReminderController';
 import { useEffect } from 'react';
 import { NotificationHandler } from './app/src/components/NotificationHandler';
+import ProductDetailsScreen from './app/src/screens/ProductDetailsScreen';
 const Stack = createNativeStackNavigator();
 
 
@@ -23,7 +23,7 @@ function AuthenticatedStack() {
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="dashboard" component={DashBoardScreen} />
       <Stack.Screen name="CreateProduct" component={CreateProductForm} />
-      <Stack.Screen name="demo" component={DemoScreen} />
+      <Stack.Screen name="ProductDetails" component={ProductDetailsScreen} />
     </Stack.Navigator>
   );
 }
