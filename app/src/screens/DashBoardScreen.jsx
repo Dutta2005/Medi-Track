@@ -4,6 +4,8 @@ import { Picker } from '@react-native-picker/picker';
 import ProductController from '../controllers/ProductController';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigation } from '@react-navigation/native';
+import Dosage from '../components/Dosage';
+import { MaterialCommunityIcons, Feather } from '@expo/vector-icons';
 
 const FilterChip = ({ label, onPress, backgroundColor, textColor }) => (
   <TouchableOpacity 
@@ -25,22 +27,58 @@ const DashboardCard = ({ title, value, colorClass = "text-light-text dark:text-d
 );
 
 
-const ProductCard = ({ product }) => (
-  <View className={`p-4 rounded-lg mb-4 border-l-4 border-light-chart5 dark:border-dark-chart3`}>
-    <View className="flex-row justify-between">
-      <Text className="text-lg font-semibold text-light-text dark:text-dark-text">{product.name}</Text>
-      <Text className={`text-sm font-medium text-light-primary dark:text-dark-primary`}>
-        {product.category}
-      </Text>
+const ProductCard = ({ product }) => {
+  return (
+    <View className="w-full mb-4 border-l-4 border-light-primary bg-light-bg dark:bg-dark-bg rounded-lg shadow-sm">
+      <View className="p-4">
+        <View className="flex-row justify-between items-start">
+          <View className="flex-row items-center gap-2">
+            <MaterialCommunityIcons name="package" size={20} color="#4B5563" />
+            <Text className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+              {product.name}
+            </Text>
+          </View>
+          {product.category && (
+            <View className="px-2 py-1 bg-blue-100 dark:bg-blue-900 rounded-full">
+            <Text className="text-sm text-blue-800 dark:text-blue-100">
+              {product.category}
+            </Text>
+          </View>
+          )}
+        </View>
+
+        <View className="mt-4 mb-5">
+          <Dosage 
+            scheduleType={product.scheduleType}
+            dosage={
+              product.dailyDosages.length > 0 
+                ? product.dailyDosages 
+                : product.weeklyDosages.length > 0 
+                ? product.weeklyDosages 
+                : product.customSchedule
+            }
+          />
+
+        <View className="flex-row justify-between items-center mt-4">
+        <View className="flex-row items-center gap-2">
+            <MaterialCommunityIcons name="pill" size={16} color="#4B5563" />
+            <Text className="text-sm text-gray-600 dark:text-gray-300">
+              Quantity: {product.quantity}
+            </Text>
+          </View>
+
+          <View className="flex-row items-center gap-2">
+            <Feather name="calendar" size={16} color="#4B5563" />
+            <Text className="text-sm text-gray-500 dark:text-gray-400">
+              Expires: {new Date(product.expiry_date).toLocaleDateString()}
+            </Text>
+          </View>
+        </View>
+        </View>
+      </View>
     </View>
-    <View className="flex-row justify-between mt-2">
-      <Text className="text-light-mutedText dark:text-dark-text">Quantity: {product.quantity}</Text>
-    </View>
-    <Text className="text-light-mutedText dark:text-dark-mutedText mt-1">
-      Expires: {new Date(product.expiry_date).toLocaleDateString()}
-    </Text>
-  </View>
-);
+  );
+};
 
 const DashboardScreen = () => {
   const { user, theme } = useAuth();

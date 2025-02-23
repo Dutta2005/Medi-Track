@@ -35,7 +35,7 @@ const Weekly = ({ days }) => {
         </View>
       ))}
       <View>
-        <Text className="text-lg text-light-text dark:text-dark-text">
+        <Text className="text-light-text dark:text-dark-text ml-2">
           {days[0]}
         </Text>
       </View>
