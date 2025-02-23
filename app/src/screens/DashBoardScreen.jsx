@@ -1,51 +1,72 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, ActivityIndicator, TouchableOpacity, RefreshControl } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
 import ProductController from '../controllers/ProductController';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigation } from '@react-navigation/native';
 
-const DashboardCard = ({ title, value, colorClass = "text-black" }) => (
-  <View className="bg-white p-4 rounded-lg shadow-sm mb-4">
-    <Text className="text-gray-600 text-sm">{title}</Text>
-    <Text className={`text-xl font-bold ${colorClass}`}>{value}</Text>
+const FilterChip = ({ label, onPress, backgroundColor, textColor }) => (
+  <TouchableOpacity 
+    onPress={onPress}
+    className={`px-4 py-2 rounded-full mr-2 mb-2`}
+    style={{ backgroundColor }}
+  >
+    <Text style={{ color: textColor }} className="font-medium">
+      {label}
+    </Text>
+  </TouchableOpacity>
+);
+
+const DashboardCard = ({ title, value, colorClass = "text-light-text dark:text-dark-text" }) => (
+  <View className="bg-light-accent dark:bg-dark-accent p-4 rounded-lg shadow-sm mb-4 mt-2">
+    <Text className="text-light-mutedText dark:text-dark-mutedText text-sm">{title}</Text>
+    <Text className={`text-xl font-bold pt-2 ${colorClass}`}>{value}</Text>
   </View>
 );
 
-const AlertCard = ({ title, description, type = "warning" }) => (
-  <View className={`p-4 rounded-lg mb-2 ${type === "warning" ? "bg-yellow-100" : "bg-red-100"}`}>
-    <Text className={`font-semibold ${type === "warning" ? "text-yellow-800" : "text-red-800"}`}>
-      {title}
-    </Text>
-    <Text className={`mt-1 ${type === "warning" ? "text-yellow-700" : "text-red-700"}`}>
-      {description}
-    </Text>
-  </View>
-);
 
 const ProductCard = ({ product }) => (
-  <View className="bg-white p-4 rounded-lg shadow-sm mb-4">
+  <View className={`p-4 rounded-lg mb-4 border-l-4 border-light-chart5 dark:border-dark-chart3`}>
     <View className="flex-row justify-between">
-      <Text className="text-lg font-semibold">{product.name}</Text>
-      <Text className="text-sm text-dark-primary">{product.category}</Text>
+      <Text className="text-lg font-semibold text-light-text dark:text-dark-text">{product.name}</Text>
+      <Text className={`text-sm font-medium text-light-primary dark:text-dark-primary`}>
+        {product.category}
+      </Text>
     </View>
     <View className="flex-row justify-between mt-2">
-      <Text className="text-gray-600">Quantity: {product.quantity}</Text>
+      <Text className="text-light-mutedText dark:text-dark-text">Quantity: {product.quantity}</Text>
     </View>
-    <Text className="text-gray-600 mt-1">
+    <Text className="text-light-mutedText dark:text-dark-mutedText mt-1">
       Expires: {new Date(product.expiry_date).toLocaleDateString()}
     </Text>
   </View>
 );
 
 const DashboardScreen = () => {
-  const { user } = useAuth();
+  const { user, theme } = useAuth();
   const navigation = useNavigation();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
+  const [activeFilter, setActiveFilter] = useState('all');
+  const [selectedCategory, setSelectedCategory] = useState('All');
 
-  const categories = ['Medicine', 'Injection', 'Medical Supplies', 'Others'];
+  const categories = ['All', 'Medicine', 'Injection', 'Medical Supplies', 'Others'];
+
+  const getLowStockItems = () => {
+    return products.filter(p => p.quantity <= (p.reorderPoint || 5));
+  };
+
+  const getExpiringItems = () => {
+    const thirtyDaysFromNow = new Date();
+    thirtyDaysFromNow.setDate(thirtyDaysFromNow.getDate() + 30);
+    
+    return products.filter(p => {
+      const expiryDate = new Date(p.expiry_date);
+      return expiryDate <= thirtyDaysFromNow;
+    });
+  };
 
   const fetchProducts = async () => {
     try {
@@ -65,56 +86,89 @@ const DashboardScreen = () => {
     }
   };
 
+  useEffect(() => {
+    fetchProducts();
+  }, [user]);
+
+  const getFilteredProducts = () => {
+    let filteredProducts = [...products];
+    
+    if (selectedCategory !== 'All') {
+      filteredProducts = filteredProducts.filter(p => p.category === selectedCategory);
+    }
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    switch (activeFilter) {
+      case 'today':
+        return filteredProducts.filter(p => {
+          const hasScheduleForToday = p.customSchedule?.some(schedule => {
+            const scheduleDate = new Date(schedule.date);
+            return scheduleDate.getTime() === today.getTime();
+          }) || false;
+          return hasScheduleForToday;
+        });
+      case 'lowStock':
+        return filteredProducts.filter(p => p.quantity <= (p.reorderPoint || 5));
+      case 'expired':
+        return filteredProducts.filter(p => new Date(p.expiry_date) < today);
+      default:
+        return filteredProducts;
+    }
+  };
+
+  const getFilterColor = (filterName) => {
+    const isActive = activeFilter === filterName;
+    switch (filterName) {
+      case 'today':
+        return {
+          bg: isActive ? '#0f8568' : '#f7f9eb',
+          text: isActive ? '#f7f9eb' : '#1e1c16'
+        };
+      case 'lowStock':
+        return {
+          bg: isActive ? '#f0c63b' : '#f7f9eb',
+          text: isActive ? '#1e1c16' : '#1e1c16'
+        };
+      case 'expired':
+        return {
+          bg: isActive ? '#d32f2f' : '#f7f9eb',
+          text: isActive ? '#f7f9eb' : '#1e1c16'
+        };
+      default:
+        return {
+          bg: isActive ? '#ff9800' : '#f7f9eb',
+          text: isActive ? '#f7f9eb' : '#1e1c16'
+        };
+    }
+  };
+
   const onRefresh = () => {
     setRefreshing(true);
     fetchProducts();
   };
 
-  useEffect(() => {
-    fetchProducts();
-  }, [user]);
-
-  const getCategoryStats = () => {
-    return categories.map(category => ({
-      name: category,
-      count: products.filter(p => p.category === category).length,
-    }));
-  };
-
-  const getLowStockItems = () => {
-    return products.filter(p => p.quantity <= p.reorderPoint);
-  };
-
-  const getExpiringItems = () => {
-    const thirtyDaysFromNow = new Date();
-    thirtyDaysFromNow.setDate(thirtyDaysFromNow.getDate() + 30);
-    
-    return products.filter(p => {
-      const expiryDate = new Date(p.expiryDate);
-      return expiryDate <= thirtyDaysFromNow;
-    });
-  };
-
   if (loading && !refreshing) {
     return (
-      <View className="flex-1 justify-center items-center">
-        <ActivityIndicator size="large" color="#0000ff" />
-        <Text className="mt-2 text-gray-600">Loading dashboard...</Text>
+      <View className="flex-1 justify-center items-center bg-light-bg dark:bg-dark-bg">
+        <ActivityIndicator size="large" color={theme === 'dark' ? '#ff8f00' : '#ff9800'} />
+        <Text className="mt-2 text-light-mutedText dark:text-dark-mutedText">Loading dashboard...</Text>
       </View>
     );
   }
 
   if (error) {
     return (
-      <View className="flex-1 p-4">
-        <View className="bg-red-100 p-4 rounded-lg">
-          <Text className="text-red-800 font-semibold">Error</Text>
-          <Text className="text-red-700 mt-1">{error}</Text>
+      <View className="flex-1 p-4 bg-light-bg dark:bg-dark-bg">
+        <View className="bg-light-destructive/10 dark:bg-dark-destructive/10 p-4 rounded-lg">
+          <Text className="text-light-destructive dark:text-dark-destructive font-semibold">Error</Text>
+          <Text className="text-light-destructive dark:text-dark-destructive mt-1">{error}</Text>
           <TouchableOpacity 
-            className="bg-red-500 py-2 px-4 rounded mt-2"
+            className="bg-light-destructive dark:bg-dark-destructive py-2 px-4 rounded mt-2"
             onPress={fetchProducts}
           >
-            <Text className="text-white text-center">Retry</Text>
+            <Text className="text-light-destructiveText dark:text-dark-destructiveText text-center">Retry</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -128,81 +182,88 @@ const DashboardScreen = () => {
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }
     >
-      {/* Create Product Button */}
-      <View className="p-4">
-        <TouchableOpacity 
-          className="bg-blue-500 py-3 px-4 rounded-lg"
-          onPress={() => navigation.navigate('CreateProduct')}
-        >
-          <Text className="text-white text-center font-semibold text-lg">
-            Create New Product
-          </Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* Stats Cards */}
       <View className="px-4">
         <View className="flex-row flex-wrap justify-between">
-          <View className="w-[48%] mb-4">
-            <DashboardCard title="Total Products" value={products.length} />
-          </View>
           <View className="w-[48%] mb-4">
             <DashboardCard 
               title="Low Stock" 
               value={getLowStockItems().length}
-              colorClass="text-yellow-600"
+              colorClass="text-light-chart4 dark:text-dark-chart4"
             />
           </View>
           <View className="w-[48%] mb-4">
             <DashboardCard 
               title="Expiring Soon" 
               value={getExpiringItems().length}
-              colorClass="text-red-600"
+              colorClass="text-light-destructive dark:text-dark-destructive"
             />
-          </View>
-          <View className="w-[48%] mb-4">
-            <DashboardCard title="Categories" value={categories.length} />
           </View>
         </View>
       </View>
 
-      {/* Alerts Section */}
-      <View className="px-4">
-        {/* Low Stock Alerts */}
-        {getLowStockItems().length > 0 && (
-          <View className="mb-4">
-            <Text className="text-lg font-semibold mb-2">Low Stock Alerts</Text>
-            {getLowStockItems().map(product => (
-              <AlertCard
-                key={product.$id}
-                title={product.name}
-                description={`Current quantity: ${product.quantity} (Reorder point: ${product.reorderPoint})`}
-                type="warning"
-              />
-            ))}
-          </View>
-        )}
-
-        {/* Expiring Items */}
-        {getExpiringItems().length > 0 && (
-          <View className="mb-4">
-            <Text className="text-lg font-semibold mb-2">Items Expiring Soon</Text>
-            {getExpiringItems().map(product => (
-              <AlertCard
-                key={product.$id}
-                title={product.name}
-                description={`Expires on: ${new Date(product.expiryDate).toLocaleDateString()}`}
-                type="error"
-              />
-            ))}
-          </View>
-        )}
+      <View className="px-5 mb-2">
+        <TouchableOpacity 
+          className="bg-light-primary dark:bg-dark-primary py-3 px-4 rounded-xl"
+          onPress={() => navigation.navigate('CreateProduct')}
+        >
+          <Text className="text-light-primaryText dark:text-dark-primaryText text-center font-semibold text-lg">
+            Create New Product
+          </Text>
+        </TouchableOpacity>
       </View>
 
-      {/* Products List */}
+      <View className="px-4 mb-4">
+        <Text className="text-lg font-semibold mb-2 text-light-text dark:text-dark-text">Status</Text>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          <FilterChip
+            label="All"
+            onPress={() => setActiveFilter('all')}
+            backgroundColor={getFilterColor('all').bg}
+            textColor={getFilterColor('all').text}
+          />
+          <FilterChip
+            label="Today's Schedule"
+            onPress={() => setActiveFilter('today')}
+            backgroundColor={getFilterColor('today').bg}
+            textColor={getFilterColor('today').text}
+          />
+          <FilterChip
+            label="Low Stock"
+            onPress={() => setActiveFilter('lowStock')}
+            backgroundColor={getFilterColor('lowStock').bg}
+            textColor={getFilterColor('lowStock').text}
+          />
+          <FilterChip
+            label="Expired"
+            onPress={() => setActiveFilter('expired')}
+            backgroundColor={getFilterColor('expired').bg}
+            textColor={getFilterColor('expired').text}
+          />
+        </ScrollView>
+      </View>
+
+      <View className="px-4 mb-4">
+        <Text className="text-light-text dark:text-dark-text text-lg font-semibold mb-2">Category</Text>
+        <View className="border border-light-border dark:border-dark-border rounded-lg">
+          <Picker
+            selectedValue={selectedCategory}
+            onValueChange={(value) => setSelectedCategory(value)}
+            style={{ color: theme === 'dark' ? '#f7f9eb' : '#1e1c16' }}
+          >
+            {categories.map(category => (
+              <Picker.Item key={category} label={category} value={category} />
+            ))}
+          </Picker>
+        </View>
+      </View>
+
       <View className="px-4 pb-4">
-        <Text className="text-xl font-bold mb-4">Your Products</Text>
-        {products.map(product => (
+        <Text className="text-xl font-bold mb-4 text-light-text dark:text-dark-text">
+          {activeFilter === 'all' ? 
+            (selectedCategory === 'All' ? 'All Products' : `${selectedCategory} Products`) : 
+            `${activeFilter} Products`}
+        </Text>
+        {getFilteredProducts().map(product => (
           <TouchableOpacity 
             key={product.$id}
             onPress={() => navigation.navigate('ProductDetails', { product })}
@@ -210,6 +271,13 @@ const DashboardScreen = () => {
             <ProductCard product={product} />
           </TouchableOpacity>
         ))}
+        {getFilteredProducts().length === 0 && (
+          <View className="py-8">
+            <Text className="text-center text-light-mutedText dark:text-dark-mutedText">
+              No products found for this filter
+            </Text>
+          </View>
+        )}
       </View>
     </ScrollView>
   );
