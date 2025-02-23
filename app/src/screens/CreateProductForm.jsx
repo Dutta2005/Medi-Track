@@ -13,6 +13,7 @@ const CreateProductForm = () => {
   const [product, setProduct] = useState({
     name: "",
     quantity: "",
+    reorderPoint: "",
     category: "",
     expiryDate: new Date(),
     scheduleType: "",
@@ -219,6 +220,18 @@ const CreateProductForm = () => {
             className="w-full p-3 rounded-lg bg-[#30241a] text-[#f7f9eb] border border-[#30241a]"
             placeholderTextColor="#9f8b76"
             placeholder="Enter quantity"
+          />
+        </View>
+
+        <View className="mb-2">
+          <Text className="text-[#f7f9eb]">Minimum Quantity to Reorder</Text>
+          <TextInput
+            value={product.reorderPoint}
+            onChangeText={(text) => handleChange("reorderPoint", text)}
+            keyboardType="numeric"
+            className="w-full p-3 rounded-lg bg-[#30241a] text-[#f7f9eb] border border-[#30241a]"
+            placeholderTextColor="#9f8b76"
+            placeholder="Enter reorder point"
           />
         </View>
 

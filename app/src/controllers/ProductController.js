@@ -14,7 +14,7 @@ class ProductController {
                     quantity: Number(productData.quantity),
                     expiry_date: String(productData.expiryDate),
                     category: productData.category,
-                    reorderPoint: productData.reorderPoint,
+                    reorderPoint: Number(productData.reorderPoint),
                     userId: productData.userId,
                     dosageInstructions: productData.dosageInstructions,
                     image: productData.image,

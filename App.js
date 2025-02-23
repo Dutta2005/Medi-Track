@@ -12,6 +12,9 @@ import HomeScreen from './app/src/screens/HomeScreen';
 import CreateProductForm from './app/src/screens/CreateProductForm';
 import Navbar from './app/src/components/navbar/Navbar';
 import Loading from './app/src/components/Loading';
+import ReminderController from './app/src/controllers/ReminderController';
+import { useEffect } from 'react';
+import { NotificationHandler } from './app/src/components/NotificationHandler';
 const Stack = createNativeStackNavigator();
 
 
@@ -52,8 +55,16 @@ function Navigation() {
 }
 
 export default function App() {
+  useEffect(() => {
+    async function initializeNotifications() {
+      await ReminderController.initializeNotifications();
+    }
+    initializeNotifications();
+  }, []);
+
   return (
-    <AuthProvider>
+    <NotificationHandler>
+      <AuthProvider>
       <NavigationContainer>
         <SafeAreaView style={styles.container}>
           <Navbar />
@@ -61,6 +72,7 @@ export default function App() {
         </SafeAreaView>
       </NavigationContainer>
     </AuthProvider>
+    </NotificationHandler>
   );
 }
 
