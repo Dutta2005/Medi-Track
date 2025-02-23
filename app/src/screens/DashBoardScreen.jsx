@@ -88,7 +88,7 @@ const DashboardScreen = () => {
 
   useEffect(() => {
     fetchProducts();
-  }, [user]);
+  }, [])
 
   const getFilteredProducts = () => {
     let filteredProducts = [...products];
