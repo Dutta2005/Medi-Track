@@ -11,7 +11,7 @@ import { useAuth } from './app/src/contexts/AuthContext';
 import HomeScreen from './app/src/screens/HomeScreen';
 import CreateProductForm from './app/src/screens/CreateProductForm';
 import Navbar from './app/src/components/navbar/Navbar';
-
+import Loading from './app/src/components/Loading';
 const Stack = createNativeStackNavigator();
 
 
@@ -42,9 +42,9 @@ function Navigation() {
 
   if (loading) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Text>Loading...</Text>
-      </View>
+      <Loading
+        fullScreen={true}
+      />
     );
   }
 
