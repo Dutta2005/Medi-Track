@@ -10,7 +10,7 @@ function ThemeToggler() {
       {theme === "dark" ? (
         <Moon color="#f7f9eb" size={24} />
       ) : (
-        <Sun color="#f7f9eb" size={24} />
+        <Sun color="#1e1c16" size={24} />
       )}
     </TouchableOpacity>
   );
