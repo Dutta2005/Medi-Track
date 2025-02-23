@@ -173,7 +173,7 @@ const CreateProductForm = () => {
     <ScrollView className="flex-1 bg-light-bg dark:bg-dark-bg p-4">
       {/* Previous sections remain the same */}
       <View className="space-y-4">
-        <Text className="text-2xl font-bold text-light-text dark:text-dark-text-">
+        <Text className="text-2xl font-bold text-light-text dark:text-dark-text text-center">
           Create Product
         </Text>
 
@@ -195,7 +195,7 @@ const CreateProductForm = () => {
             onValueChange={(itemValue) => handleChange("category", itemValue)}
             placeholder="Select category"
             style={{
-              backgroundColor: "#1e1c16",
+              backgroundColor: "#ff9800",
               color: "#f7f9eb",
             }}
           >
@@ -282,7 +282,7 @@ const CreateProductForm = () => {
                     className={`px-4 py-2 rounded-lg ${
                       product.scheduleType === type
                         ? "bg-[#ff8f00]"
-                        : "bg-[#30241a]"
+                        : "dark:bg-[#30241a]"
                     }`}
                   >
                     <Text className="text-light-text dark:text-dark-text capitalize">{type}</Text>
@@ -334,7 +334,7 @@ const CreateProductForm = () => {
                     onPress={() => setShowTimePicker(true)}
                     className="bg-light-bg dark:bg-dark-bg p-3 rounded-lg"
                   >
-                    <Text className="text-light-text dark:text-dark-bg">
+                    <Text className="text-light-text dark:text-dark-text">
                       {selectedTime.toLocaleTimeString([], {
                         hour: "2-digit",
                         minute: "2-digit",
@@ -361,7 +361,7 @@ const CreateProductForm = () => {
                         className={`px-3 py-2 rounded-lg ${
                           selectedDays.includes(day)
                             ? "bg-light-bg dark:bg-dark-bg"
-                            : "bg-light-bg dark:bg-dark-bg"
+                            : "bg-light-primary dark:bg-dark-primary"
                         }`}
                       >
                         <Text className="text-light-text dark:text-dark-text">
@@ -415,11 +415,11 @@ const CreateProductForm = () => {
         )}
 
         <TouchableOpacity
-          className="bg-light-bg dark:bg-dark-bg p-4 rounded-lg mt-4"
+          className="bg-light-primary dark:bg-dark-primary p-4 rounded-lg mt-4"
           onPress={handleSubmit}
           disabled={submiting}
         >
-          <Text className="text-light-text dark:text-dark-text text-center font-bold">
+          <Text className="text-dark-text text-center font-bold">
             {submiting ? "Saving..." : "Save Product"}
           </Text>
         </TouchableOpacity>
