@@ -1,6 +1,7 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import Dosage from '../components/Dosage';
+import { Trash2 } from 'lucide-react-native';
 
 function ProductDetailsScreen( product ) {
   const item = product.route.params.product;
@@ -70,6 +71,14 @@ function ProductDetailsScreen( product ) {
         <Text className="text-xs text-right mt-4 text-light-mutedText dark:text-dark-mutedText">
           Last updated: {item.updatedAt}
         </Text>
+
+        <TouchableOpacity 
+          onPress={() => {}}
+          className="flex-row items-center gap-2 mt-4"
+        >
+            <Trash2 size={20} color="red" />
+            <Text className="text-red-500">Delete</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );

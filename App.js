@@ -1,9 +1,8 @@
-import { Platform, SafeAreaView, StatusBar, StyleSheet, Text, Button, View } from 'react-native';
+import { Platform, SafeAreaView, StatusBar, StyleSheet } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
 import { AuthProvider } from './app/src/contexts/AuthContext';
 import LoginScreen from './app/src/screens/LoginScreen';
-import "./global.css";
 import SignupScreen from './app/src/screens/SignupScreen';
 import DashBoardScreen from './app/src/screens/DashBoardScreen';
 import { useAuth } from './app/src/contexts/AuthContext';

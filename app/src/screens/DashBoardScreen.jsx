@@ -106,7 +106,7 @@ const DashboardScreen = () => {
           const hasScheduleForToday = p.customSchedule?.some(schedule => {
             const scheduleDate = new Date(schedule.date);
             return scheduleDate.getTime() === today.getTime();
-          }) || false;
+          }) || p.scheduleType === 'daily' || false;
           return hasScheduleForToday;
         });
       case 'lowStock':
@@ -212,7 +212,7 @@ const DashboardScreen = () => {
         </TouchableOpacity>
       </View>
 
-      <View className="px-4 mb-4">
+      <View className="px-4 mt-2 mb-4">
         <Text className="text-lg font-semibold mb-2 text-light-text dark:text-dark-text">Status</Text>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           <FilterChip
@@ -258,11 +258,6 @@ const DashboardScreen = () => {
       </View>
 
       <View className="px-4 pb-4">
-        <Text className="text-xl font-bold mb-4 text-light-text dark:text-dark-text">
-          {activeFilter === 'all' ? 
-            (selectedCategory === 'All' ? 'All Products' : `${selectedCategory} Products`) : 
-            `${activeFilter} Products`}
-        </Text>
         {getFilteredProducts().map(product => (
           <TouchableOpacity 
             key={product.$id}
