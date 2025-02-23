@@ -76,16 +76,25 @@ const FeatureCard = ({ icon, title, description, color }) => (
 
 const GradientButton = ({ onPress, children }) => {
   const buttonScale = useSharedValue(1);
+  const buttonOpacity = useSharedValue(1);
+
+  // Combined animation style
   const buttonStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: buttonScale.value }]
+    transform: [{ scale: buttonScale.value }],
+    opacity: buttonOpacity.value,
   }));
 
   const handlePressIn = () => {
-    buttonScale.value = withTiming(0.95, { duration: 100 });
+    buttonScale.value = withTiming(0.95, { duration: 150 });
+    buttonOpacity.value = withTiming(0.9, { duration: 150 });
   };
   
   const handlePressOut = () => {
-    buttonScale.value = withTiming(1, { duration: 100 });
+    buttonScale.value = withSequence(
+      withTiming(1.05, { duration: 100 }),
+      withTiming(1, { duration: 200 })
+    );
+    buttonOpacity.value = withTiming(1, { duration: 150 });
   };
 
   return (
@@ -93,11 +102,12 @@ const GradientButton = ({ onPress, children }) => {
       onPress={onPress}
       onPressIn={handlePressIn}
       onPressOut={handlePressOut}
+      className="overflow-hidden rounded-2xl"  // Added overflow hidden for ripple effect
     >
       <Animated.View style={buttonStyle}>
         <LinearGradient
           colors={[COLORS.gradient.start, COLORS.gradient.end]}
-          className="rounded-2xl py-4"
+          className="rounded-2xl py-4 px-6"  // Added horizontal padding
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
         >
@@ -105,6 +115,37 @@ const GradientButton = ({ onPress, children }) => {
         </LinearGradient>
       </Animated.View>
     </TouchableOpacity>
+  );
+};
+
+// For the login button, we'll create a custom animated button
+const AnimatedLoginButton = ({ onPress, title, linkText }) => {
+  const scale = useSharedValue(1);
+  
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: scale.value }]
+  }));
+
+  const handlePressIn = () => {
+    scale.value = withTiming(0.97, { duration: 100 });
+  };
+
+  const handlePressOut = () => {
+    scale.value = withTiming(1, { duration: 100 });
+  };
+
+  return (
+    <Animated.View style={animatedStyle}>
+      <TouchableOpacity
+        onPress={onPress}
+        onPressIn={handlePressIn}
+        onPressOut={handlePressOut}
+        className="flex-row justify-center items-center space-x-2 mt-4 bg-white/10 dark:bg-white/5 py-3 px-6 rounded-xl"
+      >
+        <Text className="text-gray-700 dark:text-gray-300 text-lg">{title}</Text>
+        <Text className="text-orange-500 dark:text-orange-400 text-lg font-semibold">  {linkText}</Text>
+      </TouchableOpacity>
+    </Animated.View>
   );
 };
 
@@ -213,27 +254,21 @@ function HomeScreen() {
 
                 {/* Buttons */}
                 <Animated.View 
-                    entering={FadeInUp.duration(1000).delay(600)}
-                    className="mt-auto mb-8"
-                >
-                    <GradientButton onPress={() => navigation.navigate('signup')}>
-                        <Text className="text-white text-center text-xl font-semibold rounded-sm">
-                            Get Started
-                        </Text>
-                    </GradientButton>
+                entering={FadeInUp.duration(1000).delay(600)}
+                className="mt-auto mb-8 px-4"  // Added horizontal padding
+            >
+                <GradientButton onPress={() => navigation.navigate('signup')}>
+                    <Text className="text-white text-center text-xl font-semibold">
+                        Get Started
+                    </Text>
+                </GradientButton>
 
-                    <TouchableOpacity
-                        onPress={() => navigation.navigate('login')}
-                        className="flex-row justify-center items-center space-x-2 mt-4"
-                    >
-                        <Text className="text-gray-700 dark:text-gray-300 text-lg">
-                            Already have an account?
-                        </Text>
-                        <Text className="text-orange-500 dark:text-orange-400 text-lg font-semibold">
-                            Login
-                        </Text>
-                    </TouchableOpacity>
-                </Animated.View>
+                <AnimatedLoginButton
+                    onPress={() => navigation.navigate('login')}
+                    title="Already have an account?"
+                    linkText="Login"
+                />
+            </Animated.View>
             </View>
         </View>
     );
