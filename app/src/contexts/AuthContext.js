@@ -12,6 +12,7 @@ export const AuthProvider = ({ children }) => {
 
     useEffect(() => {
         checkUser();
+        setColorScheme(theme);
     }, []);
 
     const toggleTheme = () => {
