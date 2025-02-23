@@ -14,56 +14,62 @@ import Animated, {
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 
-// Constants
 const WINDOW_WIDTH = Dimensions.get('window').width;
+
+// Updated color scheme for better contrast
 const COLORS = {
     gradient: {
       start: "#ff9800",
-      end: "#f7a83b"
+      end: "#f57c00"  // Darker orange for better contrast
     },
     primary: "#ff9800",
-    secondary: "#f7a83b",
+    secondary: "#f57c00",
     text: {
-      primary: "#1a1a1a",
-      secondary: "#666666",
-      light: "#ffffff"
+      light: {
+        primary: "#1a1a1a",    // Almost black for light mode
+        secondary: "#4b5563",  // Darker gray for better readability
+        muted: "#6b7280"      // Medium gray for subtle text
+      },
+      dark: {
+        primary: "#f8fafc",    // Very light gray for dark mode
+        secondary: "#e2e8f0",  // Light gray for secondary text
+        muted: "#cbd5e1"      // Muted gray that's still readable
+      }
     }
-  };
-  
-  const FEATURES = [
-    {
-      id: 'reminders',
-      icon: 'clock-check-outline',
-      title: 'Smart Reminders',
-      description: 'Personalized medication alerts',
-      color: COLORS.gradient.start
-    },
-    {
-      id: 'progress',
-      icon: 'chart-timeline-variant',
-      title: 'Track Progress',
-      description: 'Monitor your medication routine',
-      color: COLORS.gradient.end
-    },
-    {
-      id: 'supply',
-      icon: 'pill',
-      title: 'Smart Supply Alert',
-      description: 'Never run out of medications again',
-      color: COLORS.gradient.start
-    }
-  ];
-  
-  
-// Reusable components
+};
+
+const FEATURES = [
+  {
+    id: 'reminders',
+    icon: 'clock-check-outline',
+    title: 'Smart Reminders',
+    description: 'Personalized medication alerts',
+    color: COLORS.gradient.start
+  },
+  {
+    id: 'progress',
+    icon: 'chart-timeline-variant',
+    title: 'Track Progress',
+    description: 'Monitor your medication routine',
+    color: COLORS.gradient.end
+  },
+  {
+    id: 'supply',
+    icon: 'pill',
+    title: 'Smart Supply Alert',
+    description: 'Never run out of medications again',
+    color: COLORS.gradient.start
+  }
+];
+
 const FeatureCard = ({ icon, title, description, color }) => (
   <View className="flex-row items-center mb-4">
-    <View className="bg-light-secondary p-3 rounded-2xl">
+    <View className="bg-gray-100 dark:bg-gray-800 p-3 rounded-2xl">
       <MaterialCommunityIcons name={icon} size={28} color={color} />
     </View>
     <View className="ml-4">
-      <Text className="text-light-cardText text-lg font-semibold">{title}</Text>
-      <Text className="text-light-mutedText">{description}</Text>
+      <Text className="text-gray-900 dark:text-gray-50 text-lg font-semibold">{title}</Text>
+      <Text className="text-gray-600 dark:text-gray-300">{description}</Text>
     </View>
   </View>
 );
@@ -102,7 +108,7 @@ const GradientButton = ({ onPress, children }) => {
   );
 };
 
-// Custom hooks
+// Custom hooks remain the same
 const useLogoAnimation = () => {
   const pulseAnim = useSharedValue(1);
 
@@ -151,7 +157,7 @@ function HomeScreen() {
     const trackingAnimation = useTrackingAnimation();
 
     return (
-        <View className="flex-1 bg-light-bg">
+        <View className="flex-1 bg-gray-50 dark:bg-gray-900">
             {/* Background with heart tracking animation */}
             <View className="absolute top-0 w-full h-2/5 overflow-hidden">
                 <LinearGradient
@@ -161,7 +167,7 @@ function HomeScreen() {
                     end={{ x: 1, y: 1 }}
                 />
                 <Animated.View 
-                    className="absolute bottom-0 w-full h-[4px] bg-light-primary" 
+                    className="absolute bottom-0 w-full h-[4px] bg-white/50 dark:bg-white/30" 
                     style={trackingAnimation.style}
                 />
             </View>
@@ -179,10 +185,10 @@ function HomeScreen() {
                             resizeMode="contain"
                         />
                     </Animated.View>
-                    <Text className="text-light-primaryText text-4xl font-bold mt-4">
+                    <Text className="text-gray-900 dark:text-white text-4xl font-bold mt-2">
                         MediTrack
                     </Text>
-                    <Text className="text-light-mutedText text-lg mt-2">
+                    <Text className="text-gray-600 dark:text-gray-300 mt-2 font-bold">
                         Never Miss a Dose Again
                     </Text>
                 </Animated.View>
@@ -190,27 +196,18 @@ function HomeScreen() {
                 {/* Feature Cards */}
                 <Animated.View 
                     entering={FadeInUp.duration(1000).delay(300)}
-                    className="mt-8"
+                    className="mt-14"
                 >
-                    <View className="bg-light-card rounded-3xl p-6 shadow-2xl shadow-light-primary mb-4">
-                        <FeatureCard
-                            icon="clock-check-outline"
-                            title="Smart Reminders"
-                            description="Personalized medication alerts"
-                            color={COLORS.gradient.start}
-                        />
-                        <FeatureCard
-                            icon="chart-timeline-variant"
-                            title="Track Progress"
-                            description="Monitor your medication routine"
-                            color={COLORS.gradient.end}
-                        />
-                        <FeatureCard
-                            icon="pill"
-                            title="Smart Supply Alert"
-                            description="Never run out of medications again"
-                            color={COLORS.gradient.start}
-                        />
+                    <View className="bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-lg shadow-gray-200 dark:shadow-gray-900 mb-4">
+                        {FEATURES.map((feature) => (
+                            <FeatureCard
+                                key={feature.id}
+                                icon={feature.icon}
+                                title={feature.title}
+                                description={feature.description}
+                                color={feature.color}
+                            />
+                        ))}
                     </View>
                 </Animated.View>
 
@@ -220,7 +217,7 @@ function HomeScreen() {
                     className="mt-auto mb-8"
                 >
                     <GradientButton onPress={() => navigation.navigate('signup')}>
-                        <Text className="text-light-primaryText text-center text-xl font-semibold">
+                        <Text className="text-white text-center text-xl font-semibold rounded-sm">
                             Get Started
                         </Text>
                     </GradientButton>
@@ -229,12 +226,14 @@ function HomeScreen() {
                         onPress={() => navigation.navigate('login')}
                         className="flex-row justify-center items-center space-x-2 mt-4"
                     >
-                        <Text className="text-light-text text-lg">Already have an account?</Text>
-                        <Text className="text-light-primary text-lg font-semibold">  Login </Text>
+                        <Text className="text-gray-700 dark:text-gray-300 text-lg">
+                            Already have an account?
+                        </Text>
+                        <Text className="text-orange-500 dark:text-orange-400 text-lg font-semibold">
+                            Login
+                        </Text>
                     </TouchableOpacity>
-                    
                 </Animated.View>
-                
             </View>
         </View>
     );
