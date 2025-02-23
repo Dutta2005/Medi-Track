@@ -123,7 +123,7 @@ const DashboardScreen = () => {
 
   return (
     <ScrollView 
-      className="flex-1 bg-gray-50"
+      className="flex-1 bg-light-bg dark:bg-dark-bg"
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }

@@ -2,9 +2,9 @@
 import React from "react";
 import { View, Text, TouchableOpacity, Alert } from "react-native";
 import { User, Settings, LogOut, Bell } from "lucide-react-native";
-import AuthController from "../controllers/AuthController";
+import AuthController from "../../controllers/AuthController";
 import { useNavigation } from "@react-navigation/native";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../../contexts/AuthContext";
 
 function DropdownMenu({ onClose }) {
   const navigation = useNavigation();

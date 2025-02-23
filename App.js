@@ -1,16 +1,16 @@
 import { Platform, SafeAreaView, StatusBar, StyleSheet, Text, Button, View } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { NavigationContainer, useNavigation } from '@react-navigation/native';
+import { NavigationContainer } from '@react-navigation/native';
 import { AuthProvider } from './app/src/contexts/AuthContext';
 import LoginScreen from './app/src/screens/LoginScreen';
 import DemoScreen from './app/src/screens/DemoScreen';
 import "./global.css";
 import SignupScreen from './app/src/screens/SignupScreen';
 import DashBoardScreen from './app/src/screens/DashBoardScreen';
-import Navbar from './app/src/components/Navbar';
 import { useAuth } from './app/src/contexts/AuthContext';
 import HomeScreen from './app/src/screens/HomeScreen';
 import CreateProductForm from './app/src/screens/CreateProductForm';
+import Navbar from './app/src/components/navbar/Navbar';
 
 const Stack = createNativeStackNavigator();
 

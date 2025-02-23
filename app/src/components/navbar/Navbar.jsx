@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { View, Text, TouchableOpacity, Dimensions } from "react-native";
 import { Menu } from "lucide-react-native";
 import DropdownMenu from "./DropdownMenu";
+import ThemeToggler from "./ThemeToggler";
 
 function Navbar() {
   const [open, setOpen] = useState(false);
@@ -13,6 +14,8 @@ function Navbar() {
         className="flex-row justify-between items-center px-4 bg-dark-bg border-b border-dark-border"
       >
         <Text className="text-dark-text text-xl font-bold">MediTrack</Text>
+
+        <ThemeToggler />
 
         <TouchableOpacity
           className="p-2 rounded-full active:bg-dark-secondary"

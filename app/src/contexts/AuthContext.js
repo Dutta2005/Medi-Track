@@ -1,15 +1,24 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import AuthController from '../controllers/AuthController';
+import { useColorScheme } from 'nativewind';
 
 const AuthContext = createContext({});
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [theme, setTheme] = useState('dark');
+    const { setColorScheme } = useColorScheme();
 
     useEffect(() => {
         checkUser();
     }, []);
+
+    const toggleTheme = () => {
+        const newTheme = theme === 'dark' ? 'light' : 'dark';
+        setTheme(newTheme);
+        setColorScheme(newTheme);
+    }
 
     async function checkUser() {
         try {
@@ -56,7 +65,9 @@ export const AuthProvider = ({ children }) => {
             setUser,
             loading,
             logout,
-            checkUser
+            checkUser,
+            theme,
+            toggleTheme
         }}>
             {children}
         </AuthContext.Provider>
