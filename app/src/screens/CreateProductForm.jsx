@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, ScrollView, Switch } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView, Switch, Alert } from "react-native";
 import { TextInput } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import ProductController from "../controllers/ProductController";
@@ -142,7 +142,7 @@ const CreateProductForm = () => {
         console.log(res);
       }
     } catch (error) {
-      console.log(error);
+      Alert.alert('Error', error.message)
     } finally {
       setSubmitting(false);
     }
@@ -170,20 +170,20 @@ const CreateProductForm = () => {
   };
 
   return (
-    <ScrollView className="flex-1 bg-[#1e1c16] p-4">
+    <ScrollView className="flex-1 bg-light-bg dark:bg-dark-bg p-4">
       {/* Previous sections remain the same */}
       <View className="space-y-4">
-        <Text className="text-2xl font-bold text-[#f7f9eb]">
+        <Text className="text-2xl font-bold text-light-text dark:text-dark-text-">
           Create Product
         </Text>
 
         {/* Basic fields remain the same */}
         <View className="my-2">
-          <Text className="text-[#f7f9eb]">Product Name</Text>
+          <Text className="text-light-text dark:text-dark-text">Product Name</Text>
           <TextInput
             value={product.name}
             onChangeText={(text) => handleChange("name", text)}
-            className="w-full p-3 rounded-lg bg-[#30241a] text-[#f7f9eb] border border-[#30241a]"
+            className="w-full p-3 rounded-lg bg-light-bg dark:bg-dark-bg text-light-text dark:text-dark-text border border-light-border dark:border-dark-border"
             placeholderTextColor="#9f8b76"
             placeholder="Enter product name"
           />
@@ -216,36 +216,36 @@ const CreateProductForm = () => {
         </View>
 
         <View className="mb-2">
-          <Text className="text-[#f7f9eb]">Quantity</Text>
+          <Text className="text-light-text dark:text-dark-text">Quantity</Text>
           <TextInput
             value={product.quantity}
             onChangeText={(text) => handleChange("quantity", text)}
             keyboardType="numeric"
-            className="w-full p-3 rounded-lg bg-[#30241a] text-[#f7f9eb] border border-[#30241a]"
+            className="w-full p-3 rounded-lg bg-light-bg dark:bg-dark-bg text-light-text dark:text-dark-text border border-light-border dark:border-dark-border"
             placeholderTextColor="#9f8b76"
             placeholder="Enter quantity"
           />
         </View>
 
         <View className="mb-2">
-          <Text className="text-[#f7f9eb]">Minimum Quantity to Reorder</Text>
+          <Text className="text-light-text dark:text-dark-text">Minimum Quantity to Reorder</Text>
           <TextInput
             value={product.reorderPoint}
             onChangeText={(text) => handleChange("reorderPoint", text)}
             keyboardType="numeric"
-            className="w-full p-3 rounded-lg bg-[#30241a] text-[#f7f9eb] border border-[#30241a]"
+            className="w-full p-3 rounded-lg bg-light-bg dark:bg-dark-bg text-light-text dark:text-dark-text border border-light-border dark:border-dark-border"
             placeholderTextColor="#9f8b76"
             placeholder="Enter reorder point"
           />
         </View>
 
         <View className="mb-2">
-          <Text className="text-[#f7f9eb]">Expiry Date</Text>
+          <Text className="text-light-text dark:text-dark-text">Expiry Date</Text>
           <TouchableOpacity
             onPress={() => setShowDatePicker(true)}
-            className="w-full p-3 rounded-lg bg-[#30241a] border border-[#30241a]"
+            className="w-full p-3 rounded-lg bg-light-bg dark:bg-dark-bg border border-light-border dark:border-dark-border"
           >
-            <Text className="text-[#f7f9eb]">
+            <Text className="text-light-text dark:text-dark-text">
               {product.expiryDate.toLocaleDateString()}
             </Text>
           </TouchableOpacity>
@@ -261,7 +261,7 @@ const CreateProductForm = () => {
         </View>
 
         <View className="flex-row items-center justify-between">
-          <Text className="text-[#f7f9eb]">Enable Schedule</Text>
+          <Text className="text-light-text dark:text-dark-text">Enable Schedule</Text>
           <Switch
             value={enableSchedule}
             onValueChange={toggleSchedule}
@@ -273,7 +273,7 @@ const CreateProductForm = () => {
         {enableSchedule && (
           <View className="space-y-4">
             <View className="mb-2">
-              <Text className="text-[#f7f9eb]">Schedule Type</Text>
+              <Text className="text-light-text dark:text-dark-text">Schedule Type</Text>
               <View className="flex-row space-x-2">
                 {["daily", "weekly", "custom"].map((type) => (
                   <TouchableOpacity
@@ -285,7 +285,7 @@ const CreateProductForm = () => {
                         : "bg-[#30241a]"
                     }`}
                   >
-                    <Text className="text-[#f7f9eb] capitalize">{type}</Text>
+                    <Text className="text-light-text dark:text-dark-text capitalize">{type}</Text>
                   </TouchableOpacity>
                 ))}
               </View>
@@ -294,12 +294,12 @@ const CreateProductForm = () => {
             {/* Daily schedule section remains the same */}
             {product.scheduleType === "daily" && (
               <View className="mb-2">
-                <Text className="text-[#f7f9eb]">Daily Times</Text>
+                <Text className="text-light-text dark:text-dark-text">Daily Times</Text>
                 <TouchableOpacity
                   onPress={() => setShowTimePicker(true)}
-                  className="bg-[#ff8f00] p-3 rounded-lg"
+                  className="bg-light-bg dark:bg-dark-bg p-3 rounded-lg"
                 >
-                  <Text className="text-[#f7f9eb] text-center">Add Time</Text>
+                  <Text className="text-light-text dark:text-dark-text text-center">Add Time</Text>
                 </TouchableOpacity>
                 {showTimePicker && (
                   <DateTimePicker
@@ -313,9 +313,9 @@ const CreateProductForm = () => {
                   {product.dailyDosages.map((time, index) => (
                     <View
                       key={index}
-                      className="flex-row justify-between items-center bg-[#30241a] p-3 rounded-lg"
+                      className="flex-row justify-between items-center bg-light-bg dark:bg-dark-bg p-3 rounded-lg"
                     >
-                      <Text className="text-[#f7f9eb]">{time}</Text>
+                      <Text className="text-light-text dark:text-dark-text">{time}</Text>
                       <TouchableOpacity onPress={() => removeDailyTime(index)}>
                         <Text className="text-red-500">Remove</Text>
                       </TouchableOpacity>
@@ -329,12 +329,12 @@ const CreateProductForm = () => {
             {product.scheduleType === "weekly" && (
               <View className="space-y-4">
                 <View className="mb-2">
-                  <Text className="text-[#f7f9eb]">Select Time</Text>
+                  <Text className="text-light-text dark:text-dark-text">Select Time</Text>
                   <TouchableOpacity
                     onPress={() => setShowTimePicker(true)}
-                    className="bg-[#30241a] p-3 rounded-lg"
+                    className="bg-light-bg dark:bg-dark-bg p-3 rounded-lg"
                   >
-                    <Text className="text-[#f7f9eb]">
+                    <Text className="text-light-text dark:text-dark-bg">
                       {selectedTime.toLocaleTimeString([], {
                         hour: "2-digit",
                         minute: "2-digit",
@@ -352,7 +352,7 @@ const CreateProductForm = () => {
                 </View>
 
                 <View className="mb-2">
-                  <Text className="text-[#f7f9eb]">Select Days:</Text>
+                  <Text className="text-light-text dark:text-dark-text">Select Days:</Text>
                   <View className="flex-row flex-wrap gap-2">
                     {daysOfWeek.map((day) => (
                       <TouchableOpacity
@@ -360,11 +360,11 @@ const CreateProductForm = () => {
                         onPress={() => toggleDaySelection(day)}
                         className={`px-3 py-2 rounded-lg ${
                           selectedDays.includes(day)
-                            ? "bg-[#ff8f00]"
-                            : "bg-[#30241a]"
+                            ? "bg-light-bg dark:bg-dark-bg"
+                            : "bg-light-bg dark:bg-dark-bg"
                         }`}
                       >
-                        <Text className="text-[#f7f9eb]">
+                        <Text className="text-light-text dark:text-dark-text">
                           {day.slice(0, 3)}
                         </Text>
                       </TouchableOpacity>
@@ -378,12 +378,12 @@ const CreateProductForm = () => {
             {product.scheduleType === "custom" && (
               <View className="space-y-4">
                 <View className="mb-2">
-                  <Text className="text-[#f7f9eb]">Start Date</Text>
+                  <Text className="text-light-text dark:text-dark-text">Start Date</Text>
                   <TouchableOpacity
                     onPress={() => setShowCustomDatePicker(true)}
-                    className="w-full p-3 rounded-lg bg-[#30241a] border border-[#30241a]"
+                    className="w-full p-3 rounded-lg bg-light-bg dark:bg-dark-bg border border-light-border dark:border-dark-border"
                   >
-                    <Text className="text-[#f7f9eb]">
+                    <Text className="text-light-text dark:text-dark-text">
                       {customStartDate.toLocaleDateString()}
                     </Text>
                   </TouchableOpacity>
@@ -399,12 +399,12 @@ const CreateProductForm = () => {
                 </View>
 
                 <View className="mb-2">
-                  <Text className="text-[#f7f9eb]">Repeat Every (Days)</Text>
+                  <Text className="text-light-text dark:text-dark-text">Repeat Every (Days)</Text>
                   <TextInput
                     value={repeatDays}
                     onChangeText={setRepeatDays}
                     keyboardType="numeric"
-                    className="w-full p-3 rounded-lg bg-[#30241a] text-[#f7f9eb] border border-[#30241a]"
+                    className="w-full p-3 rounded-lg bg-light-bg dark:bg-dark-bg  text-light-text dark:text-dark-text border border-light-border dark:border-dark-border"
                     placeholderTextColor="#9f8b76"
                     placeholder="Enter number of days"
                   />
@@ -415,11 +415,11 @@ const CreateProductForm = () => {
         )}
 
         <TouchableOpacity
-          className="bg-[#ff8f00] p-4 rounded-lg mt-4"
+          className="bg-light-bg dark:bg-dark-bg p-4 rounded-lg mt-4"
           onPress={handleSubmit}
           disabled={submiting}
         >
-          <Text className="text-[#f7f9eb] text-center font-bold">
+          <Text className="text-light-text dark:text-dark-text text-center font-bold">
             {submiting ? "Saving..." : "Save Product"}
           </Text>
         </TouchableOpacity>
