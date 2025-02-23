@@ -16,7 +16,8 @@ import { NotificationHandler, usePushNotifications } from './app/src/components/
 import ProductDetailsScreen from './app/src/screens/ProductDetailsScreen';
 import './global.css';
 import Alerts from './app/src/components/Alerts';
-// import * as Notifications from 'expo-notifications';
+import MedialChatbotScreen from './app/src/screens/MedicalChatbotScreen';
+
 
 const Stack = createNativeStackNavigator();
 
@@ -26,6 +27,7 @@ function AuthenticatedStack() {
       <Stack.Screen name="dashboard" component={DashBoardScreen} />
       <Stack.Screen name="CreateProduct" component={CreateProductForm} />
       <Stack.Screen name="ProductDetails" component={ProductDetailsScreen} />
+      <Stack.Screen name="Chatbot" component={MedialChatbotScreen} />
       <Stack.Screen name="Alerts" component={Alerts} />
     </Stack.Navigator>
   );
