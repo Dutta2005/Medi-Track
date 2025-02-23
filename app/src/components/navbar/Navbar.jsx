@@ -15,7 +15,12 @@ function Navbar() {
   const activeColor = theme === 'dark' ? 'rgba(247, 249, 235, 0.1)' : 'rgba(30, 28, 22, 0.1)';
  
   return (
-    <View style={{ zIndex: 50 }}>
+    <View style={{ 
+      zIndex: 50,
+      width: '100%',
+      position: 'relative',
+      top: 0,
+    }}>
       <View
         style={{ 
           height: 60,
@@ -23,33 +28,38 @@ function Navbar() {
           flexDirection: 'row',
           justifyContent: 'space-between',
           alignItems: 'center',
-          paddingHorizontal: 16
+          paddingHorizontal: 16,
+          width: '100%',
         }}
       >
         <Image
           source={require('../../../assets/Logo2.png')}
           style={{
-            width: 145, // equivalent to w-52
-            height: 139, // equivalent to h-32
+            width: 145,
+            height: 139,
             resizeMode: 'contain'
           }}
         />
-        {/*  */}
-      <View className="flex-row items-center gap-2">
-        <ThemeToggler />
 
-        {user && (
-          <TouchableOpacity
-          style={{
-            padding: 6,
-            borderRadius: 9999,
-            backgroundColor: open ? activeColor : 'transparent'
-          }}
-          onPress={() => setOpen(!open)}
-        >
-          <Menu color={textColor} size={30} />
-        </TouchableOpacity>
-        )}
+        <View style={{ 
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: 0
+        }}>
+          <ThemeToggler />
+
+          {user && (
+            <TouchableOpacity
+              style={{
+                padding: 6,
+                borderRadius: 9999,
+                backgroundColor: open ? activeColor : 'transparent'
+              }}
+              onPress={() => setOpen(!open)}
+            >
+              <Menu color={textColor} size={30} />
+            </TouchableOpacity>
+          )}
         </View>
       </View>
 

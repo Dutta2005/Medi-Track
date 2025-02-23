@@ -15,7 +15,8 @@ import { useEffect } from 'react';
 import { NotificationHandler, usePushNotifications } from './app/src/components/NotificationHandler';
 import ProductDetailsScreen from './app/src/screens/ProductDetailsScreen';
 import './global.css';
-import * as Notifications from 'expo-notifications';
+import Alerts from './app/src/components/Alerts';
+// import * as Notifications from 'expo-notifications';
 
 const Stack = createNativeStackNavigator();
 
@@ -25,6 +26,7 @@ function AuthenticatedStack() {
       <Stack.Screen name="dashboard" component={DashBoardScreen} />
       <Stack.Screen name="CreateProduct" component={CreateProductForm} />
       <Stack.Screen name="ProductDetails" component={ProductDetailsScreen} />
+      <Stack.Screen name="Alerts" component={Alerts} />
     </Stack.Navigator>
   );
 }
@@ -93,7 +95,7 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
-    backgroundColor: '#fff'
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+    // backgroundColor: '#fff'
   },
 });

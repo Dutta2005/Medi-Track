@@ -4,12 +4,12 @@ import { User, Bell, Settings, LogOut, ChevronRight, X } from "lucide-react-nati
 import AuthController from "../../controllers/AuthController";
 import { useNavigation } from "@react-navigation/native";
 import { useAuth } from "../../contexts/AuthContext";
-import Alerts from "../Alerts";
+// import Alerts from "../Alerts";
 
 function DropdownMenu({ onClose }) {
   const navigation = useNavigation();
   const { setUser, user } = useAuth();
-  const [show, setShow] = React.useState(false);
+  // const [show, setShow] = React.useState(false);
   const slideAnim = React.useRef(new Animated.Value(0)).current;
 
   React.useEffect(() => {
@@ -34,8 +34,9 @@ function DropdownMenu({ onClose }) {
     {
       icon: Bell,
       label: "Notifications",
-      onPress: () => setShow(true),
-      color: "#2196F3",
+      onPress: () => {
+        navigation.navigate("Alerts");
+      },
     },
     {
       icon: Settings,
@@ -79,7 +80,7 @@ function DropdownMenu({ onClose }) {
 
   return (
     <>
-      <Modal
+      {/* <Modal
         visible={show}
         animationType="slide"
         onRequestClose={() => setShow(false)}
@@ -98,7 +99,7 @@ function DropdownMenu({ onClose }) {
           </View>
           <Alerts />
         </SafeAreaView>
-      </Modal>
+      </Modal> */}
 
       <Animated.View
         className="absolute right-4 top-20 bg-light-muted dark:bg-dark-muted rounded-2xl shadow-xl w-72 overflow-hidden"
