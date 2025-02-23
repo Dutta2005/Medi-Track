@@ -1,6 +1,6 @@
 import React from "react";
-import { View, Text, TouchableOpacity, Alert, Modal, SafeAreaView, StatusBar, Animated } from "react-native";
-import { User, Bell, Settings, LogOut, ChevronRight, X } from "lucide-react-native";
+import { View, Text, TouchableOpacity, Alert, Animated } from "react-native";
+import { User, Bell, Settings, LogOut, ChevronRight, Stethoscope, MapPin } from "lucide-react-native";
 import AuthController from "../../controllers/AuthController";
 import { useNavigation } from "@react-navigation/native";
 import { useAuth } from "../../contexts/AuthContext";
@@ -37,6 +37,23 @@ function DropdownMenu({ onClose }) {
       onPress: () => {
         navigation.navigate("Alerts");
       },
+      color: "#2196F3",
+    },
+    {
+      icon: Stethoscope,
+      label: "Umeed",
+      onPress: () => {
+        navigation.navigate("Chatbot")
+      },
+      color: "#4CAF50",
+    },
+    {
+      icon: MapPin,
+      label:"Nearby Pharmacies",
+      onPress: () => {
+        navigation.navigate("dashboard");
+      },
+      color: "#D32F2F",
     },
     {
       icon: Settings,
@@ -80,27 +97,6 @@ function DropdownMenu({ onClose }) {
 
   return (
     <>
-      {/* <Modal
-        visible={show}
-        animationType="slide"
-        onRequestClose={() => setShow(false)}
-        statusBarTranslucent
-      >
-        <SafeAreaView className="flex-1 dark:bg-[#1e1c16]">
-          <StatusBar barStyle="light-content" />
-          <View className="py-4 px-4 flex-row justify-between items-center border-b border-[#ffffff20]">
-            <Text className="text-[#f7f9eb] text-xl font-semibold">Notifications</Text>
-            <TouchableOpacity
-              className="p-2 rounded-full bg-[#ffffff10]"
-              onPress={() => setShow(false)}
-            >
-              <X size={24} color="#ff8f00" />
-            </TouchableOpacity>
-          </View>
-          <Alerts />
-        </SafeAreaView>
-      </Modal> */}
-
       <Animated.View
         className="absolute right-4 top-20 bg-light-muted dark:bg-dark-muted rounded-2xl shadow-xl w-72 overflow-hidden"
         style={{

@@ -48,7 +48,8 @@ const ProductCard = ({ product }) => {
         </View>
 
         <View className="mt-4 mb-5">
-          <Dosage 
+          {product.scheduleType !== 'custom' && (
+            <Dosage 
             scheduleType={product.scheduleType}
             dosage={
               product.dailyDosages.length > 0 
@@ -58,6 +59,7 @@ const ProductCard = ({ product }) => {
                 : product.customSchedule
             }
           />
+          )}
 
         <View className="flex-row justify-between items-center mt-4">
         <View className="flex-row items-center gap-2">
